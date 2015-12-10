@@ -1,0 +1,54 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+
+    <style name="districtTextStyle">
+        <item name="android:textColor">#FF868686</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingLeft">15dp</item>
+    </style>
+
+    <style name="districtTextStyleActive">
+        <item name="android:textColor">#FF454545</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <!--row_schema_task2.xml-->
+    <style name="tasksTextStyle">
+        <item name="android:textColor">#FF454545</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingBottom">15dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+
+</resources>

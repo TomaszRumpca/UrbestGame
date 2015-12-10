@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Urbest Game</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_navigator">Navigator</string>
+    <string name="menu_task_list">Tasks</string>
+    <string name="tasks">Tasks</string>
+    <string name="default_done_tasks">0/0</string>
+    <string name="all">All</string>
+    <string name="task">Task</string>
+</resources>
