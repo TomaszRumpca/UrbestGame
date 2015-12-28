@@ -57,13 +57,13 @@ public class DbFacade {
 
         final List<Task> tasks = new ArrayList<>();
 
-        final String[] projection = new String[]{DbConstans.KEY_TASK, DbConstans.KEY_ACHIVED_POINTS,
+        final String[] projection = new String[]{DbConstans.KEY_TASK, DbConstans.KEY_ACHIEVED_POINTS,
                 DbConstans.KEY_MAX_POINTS, DbConstans.KEY_STATE, DbConstans.KEY_GROUP_COLOR};
         final String sortOrder = DbConstans.KEY_TASK_ID + " ASC";
 
         final Map<String, String> projectionMap = new HashMap<>();
         projectionMap.put(DbConstans.KEY_TASK, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_TASK);
-        projectionMap.put(DbConstans.KEY_ACHIVED_POINTS, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_ACHIVED_POINTS);
+        projectionMap.put(DbConstans.KEY_ACHIEVED_POINTS, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_ACHIEVED_POINTS);
         projectionMap.put(DbConstans.KEY_MAX_POINTS, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_MAX_POINTS);
         projectionMap.put(DbConstans.KEY_STATE, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_STATE);
         projectionMap.put(DbConstans.KEY_TASK_GROUP, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_TASK_GROUP);
@@ -99,5 +99,85 @@ public class DbFacade {
         db.close();
 
         return tasks;
+    }
+
+    public Task getTask(String title) {
+
+        Task task = new Task();
+        db.open();
+
+        Cursor cursor = db.getTask(title);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            task.setTaskName(cursor.getString(0));
+            task.setMaxPoints(cursor.getInt(1));
+            cursor.close();
+        }
+
+        db.close();
+        return task;
+    }
+
+    public boolean submitAnswer(String taskName, String answer) {
+
+        db.open();
+
+        long updatedRows = db.submitAnswer(taskName, answer);
+
+        db.close();
+
+        return updatedRows > 0L ? true : false;
+    }
+
+    public boolean isTaskActive(String taskName) {
+
+        db.open();
+
+        Cursor cursor = db.getTaskState(taskName);
+
+        int taskStatus = -1;
+        if(cursor.moveToFirst()){
+            taskStatus = cursor.getInt(0);
+        }
+
+        db.close();
+        return taskStatus == Task.State.ACTIVE.getValue() ? true : false;
+    }
+
+    public String getAnswer(String taskName) {
+
+        db.open();
+
+        Cursor cursor = db.getAnswer(taskName);
+
+        String answer = null;
+        if(cursor.moveToFirst()){
+            answer = cursor.getString(0);
+        }
+
+        db.close();
+
+        return answer;
+    }
+
+    public boolean saveCurrentAnswer(String taskName, String answer) {
+
+        db.open();
+        long updatedRows = -1L;
+
+        Cursor cursor = db.getSubmissionStatus(taskName);
+
+        int submissionStatus = -1;
+
+        if(cursor.moveToFirst()){
+            submissionStatus = cursor.getInt(0);
+        }
+        if(submissionStatus == DbConstans.SUBMISSION_STATUS_NOT_SUBMITTED){
+            updatedRows = db.saveAnswer(taskName, answer);
+        }
+
+        db.close();
+
+        return updatedRows == 1L ? true : false;
     }
 }

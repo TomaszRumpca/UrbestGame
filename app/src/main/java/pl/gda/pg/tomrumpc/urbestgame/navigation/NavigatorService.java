@@ -32,12 +32,13 @@ public class NavigatorService extends Service implements SensorEventListener {
         Sensor sAccelerometr = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         Sensor sMagneticField = sManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-        sManager.registerListener(this, sGravity, SensorManager.SENSOR_DELAY_UI);
+//        sManager.registerListener(this, sGravity, SensorManager.SENSOR_DELAY_UI);
         sManager.registerListener(this, sMagneticField, SensorManager.SENSOR_DELAY_UI);
         sManager.registerListener(this, sAccelerometr, SensorManager.SENSOR_DELAY_UI);
 
 
         double[] userPosition = new double[]{54.497378d, 18.502430d, 0f};
+
         enu = NavigationUtils.getENU(
                 NavigationUtils.degreesToRad(userPosition[0]),
                 NavigationUtils.degreesToRad(userPosition[1]),

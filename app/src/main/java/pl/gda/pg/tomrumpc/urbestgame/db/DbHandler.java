@@ -1,8 +1,5 @@
 package pl.gda.pg.tomrumpc.urbestgame.db;
 
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,15 +9,22 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
-import java.util.Map;
+import com.google.common.base.Joiner;
 
-import pl.gda.pg.tomrumpc.urbestgame.Task;
+import java.util.Map;
 
 public class DbHandler {
 
     private final Context context;
     private SQLiteDatabase db;
     private DatabaseHelper myDbHelper;
+
+
+    String taskIdSelection =
+            Joiner.on(" ").join(DbConstans.KEY_TASK_REF_ID, "=",
+            "( SELECT", DbConstans.KEY_TASK_ID, "FROM", DbConstans.TASKS_TABLE,
+            "WHERE", DbConstans.KEY_TASK, "=? )");
+
 
     public DbHandler(Context _context) {
         context = _context;
@@ -48,11 +52,12 @@ public class DbHandler {
 
     public Cursor getAllEntries(String fromTable) {
 
-        if (fromTable.equals(DbConstans.LOCATIONS_TABLE)) {
-            String[] columns = {DbConstans.KEY_LATITUDE, DbConstans.KEY_LONGITUDE, DbConstans.KEY_DATE};
-            return db.query(DbConstans.LOCATIONS_TABLE, columns, null, null, null, null,
-                    DbConstans.KEY_DATE);
-        } else if (fromTable.equals(DbConstans.MARKER_TABLE)) {
+//        if (fromTable.equals(DbConstans.LOCATIONS_TABLE)) {
+//            String[] columns = {DbConstans.KEY_LATITUDE, DbConstans.KEY_LONGITUDE, DbConstans.KEY_DATE};
+//            return db.query(DbConstans.LOCATIONS_TABLE, columns, null, null, null, null,
+//                    DbConstans.KEY_DATE);
+//        } else
+        if (fromTable.equals(DbConstans.MARKER_TABLE)) {
             String[] columns = {DbConstans.KEY_MARKER_ID, DbConstans.KEY_MARKER_LATITUDE,
                     DbConstans.KEY_MARKER_LONGITUDE, DbConstans.KEY_MARKER_TASK, DbConstans.KEY_MARKER_DRAGGABLE};
             return db.query(DbConstans.MARKER_TABLE, columns, null, null, null, null,
@@ -81,7 +86,7 @@ public class DbHandler {
     }
 
     public int getCompletedTaskNumber(String groupName) {
-        String[] projection = {DbConstans.KEY_ACHIVED_POINTS};
+        String[] projection = {DbConstans.KEY_ACHIEVED_POINTS};
 
 
         return 0;//TODO
@@ -89,7 +94,7 @@ public class DbHandler {
 
 //    public int getDoneTaskCount(float district) {
 //
-//        String[] columns = {DbConstans.KEY_ACHIVED_POINTS};
+//        String[] columns = {DbConstans.KEY_ACHIEVED_POINTS};
 //        Cursor cursor = null;
 //
 //        if (district != -1) {
@@ -156,6 +161,59 @@ public class DbHandler {
 
     }
 
+    public Cursor getTask(String title) {
+
+        String[] projection = {DbConstans.KEY_TASK, DbConstans.KEY_MAX_POINTS};
+
+        String selection = DbConstans.KEY_TASK + " = '" + title + "'";
+
+        return db.query(DbConstans.TASKS_TABLE, projection, selection, null, null, null, null);
+    }
+
+//    public Cursor getTaskID(String taskName) {
+//        String[] projection = {DbConstans.KEY_TASK_ID};
+//        String selection = Joiner.on(" ").join(DbConstans.KEY_TASK, "=", taskName);
+//        return db.query(DbConstans.TASKS_TABLE, projection, selection, null, null, null, null);
+//    }
+
+    public long submitAnswer(String taskName, String answer) {
+
+        String[] selectionArgs = {taskName};
+        ContentValues cv = new ContentValues();
+        cv.put(DbConstans.KEY_ANSWER, answer);
+        cv.put(DbConstans.KEY_SUBMISSION_STATUS, DbConstans.SUBMISSION_STATUS_SUBMITTED);
+
+        return db.update(DbConstans.QA_TABLE, cv, taskIdSelection, selectionArgs);
+    }
+
+    public Cursor getTaskState(String taskName) {
+        String task = new StringBuilder("'").append(taskName).append("'").toString();
+        String[] projection = {DbConstans.KEY_STATE};
+        String selection = Joiner.on(" ").join(DbConstans.KEY_TASK, "=", task);
+        return db.query(DbConstans.TASKS_TABLE, projection, selection, null, null, null, null);
+    }
+
+    public Cursor getAnswer(String taskName) {
+        String[] projection = {DbConstans.KEY_ANSWER};
+        String[] selectionArgs = {taskName};
+        return db.query(DbConstans.QA_TABLE, projection, taskIdSelection, selectionArgs,
+                null, null, null);
+    }
+
+    public long saveAnswer(String taskName, String answer) {
+        String[] selectionArgs = {taskName};
+        ContentValues cv = new ContentValues();
+        cv.put(DbConstans.KEY_ANSWER, answer);
+        return db.update(DbConstans.QA_TABLE, cv, taskIdSelection, selectionArgs);
+    }
+
+    public Cursor getSubmissionStatus(String taskName) {
+        String[] projection = {DbConstans.KEY_SUBMISSION_STATUS};
+        String[] selectionArgs = {taskName};
+        return db.query(DbConstans.QA_TABLE, projection, taskIdSelection, selectionArgs,
+                null, null, null);
+    }
+
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
 
@@ -166,11 +224,12 @@ public class DbHandler {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(DbConstans.CREATE_LOCATION_TABLE);
+//            db.execSQL(DbConstans.CREATE_LOCATION_TABLE);
             db.execSQL(DbConstans.CREATE_MARKERS_TABLE);
             db.execSQL(DbConstans.CREATE_ALERTS_TABLE);
             db.execSQL(DbConstans.CREATE_TASKS_TABLE);
             db.execSQL(DbConstans.CREATE_TASK_GROUPS_TABLE);
+            db.execSQL(DbConstans.CREATE_QA_TABLE);
 
             String zabianka = "1";
             String przymorze = "2";
@@ -181,28 +240,28 @@ public class DbHandler {
 
             String queryStart = "INSERT INTO " + DbConstans.TASKS_TABLE + " ("
                     + DbConstans.KEY_TASK_ID + ", " + DbConstans.KEY_TASK + ", " + DbConstans.KEY_MAX_POINTS
-                    + ", " + DbConstans.KEY_ACHIVED_POINTS + ", " + DbConstans.KEY_USED_PROMPTS
-                    + ", " + DbConstans.KEY_TASK_GROUP + ", " + DbConstans.KEY_LATLNG + ", "
+                    + ", " + DbConstans.KEY_ACHIEVED_POINTS + ", " + DbConstans.KEY_USED_PROMPTS
+                    + ", " + DbConstans.KEY_TASK_GROUP + ", " + DbConstans.KEY_LATITUDE + ", " + DbConstans.KEY_LONGITUDE + ", "
                     + DbConstans.KEY_STATE + ", " + DbConstans.KEY_DATE_OF_ACTIVATION + ", " + DbConstans.KEY_DATE_OF_COMPLETION
                     + ") VALUES (";
             String queryEnd = ");";
 
-            String values1 = "'" + DbConstans.INVESTMENT_AREA + "', 'Warzywniak', '6','-1','null', '" + zaspa + "', '54.396575:18.585299', '0', 'null', 'null'";
-            String values2 = "'" + DbConstans.SCULPTURES + "', 'Sztuka w przestrzeni', '5','-1','null', '" + zabianka + "', '54.420478:18.57427', '0', 'null', 'null'";
-            String values3 = "'" + DbConstans.RIDDLE + "', 'Kładka', '4','-1','null', '" + zaspa + "', '54.394339:18.601804', '0', 'null', 'null'";
-            String values4 = "'" + DbConstans.FOUNTAIN + "', 'Połamany Herbatnik', '4','-1','null', '" + zabianka + "', '54.420540:18.575585', '0', 'null', 'null'";
-            String values5 = "'" + DbConstans.PLAYING_FIELD + "', 'Piłka w grze!', '10','-1','null', '" + zabianka + "', '54.420202:18.583375', '0', 'null', 'null'";
-            String values6 = "'" + DbConstans.ERGO + "', 'Ergo Arena', '5','-1','null', '" + zabianka + "', '54.424478:18.579850', '0', 'null', 'null'";
-            String values7 = "'" + DbConstans.LAKE + "', 'Jezioro', '5','-1','null', '" + zabianka + "', '54.416325:18.573062', '0', 'null', 'null'";
-            String values8 = "'" + DbConstans.BLOCK + "', 'Blokowisko', '10','-1','null', '" + przymorze + "', '54.407531:18.597417', '0', 'null', 'null'";
-            String values9 = "'" + DbConstans.BAKERY + "', 'Piekarnia Graczyk', '2','-1','null', '" + przymorze + "', '54.401828:18.579293', '0', 'null', 'null'";
-            String values10 = "'" + DbConstans.CROSSWORD + "', 'Dywizjonu 303', '7','-1','null', '" + zaspa + "', '54.390293:18.599415', '0', 'null', 'null'";
-            String values11 = "'" + DbConstans.OLDAIRPORT + "', 'Dziedzictwo dzielnicy', '3','-1','null', '" + zaspa + "', '54.399636:18.606868', '0', 'null', 'null'";
-            String values12 = "'" + DbConstans.POPE + "', 'Papież Polak', '5','-1','null', '" + zaspa + "', '54.399196:18.595927', '0', 'null', 'null'";
-            String values13 = "'" + DbConstans.FALOWIEC + "', 'Falowiec', '5','-1','null', '" + przymorze + "', '54.415966:18.586301', '0', 'null', 'null'";
-            String values14 = "'" + DbConstans.BALTIC + "', 'Bałtyk', '6','-1','null', '" + przymorze + "', '54.409423:18.575863', '0', 'null', 'null'";
+            String values1 = "'" + DbConstans.INVESTMENT_AREA + "', 'Warzywniak', '6','-1','null', '" + zaspa + "', '54.396575', '18.585299', '0', 'null', 'null'";
+            String values2 = "'" + DbConstans.SCULPTURES + "', 'Sztuka w przestrzeni', '5','-1','null', '" + zabianka + "', '54.420478', '18.57427', '0', 'null', 'null'";
+            String values3 = "'" + DbConstans.RIDDLE + "', 'Kładka', '4','-1','null', '" + zaspa + "', '54.394339', '18.601804', '0', 'null', 'null'";
+            String values4 = "'" + DbConstans.FOUNTAIN + "', 'Połamany Herbatnik', '4','-1','null', '" + zabianka + "', '54.420540', '18.575585', '0', 'null', 'null'";
+            String values5 = "'" + DbConstans.PLAYING_FIELD + "', 'Piłka w grze!', '10','-1','null', '" + zabianka + "', '54.420202', '18.583375', '0', 'null', 'null'";
+            String values6 = "'" + DbConstans.ERGO + "', 'Ergo Arena', '5','-1','null', '" + zabianka + "', '54.424478', '18.579850', '0', 'null', 'null'";
+            String values7 = "'" + DbConstans.LAKE + "', 'Jezioro', '5','-1','null', '" + zabianka + "', '54.416325', '18.573062', '0', 'null', 'null'";
+            String values8 = "'" + DbConstans.BLOCK + "', 'Blokowisko', '10','-1','null', '" + przymorze + "', '54.407531', '18.597417', '0', 'null', 'null'";
+            String values9 = "'" + DbConstans.BAKERY + "', 'Piekarnia Graczyk', '2','-1','null', '" + przymorze + "', '54.401828', '18.579293', '0', 'null', 'null'";
+            String values10 = "'" + DbConstans.CROSSWORD + "', 'Dywizjonu 303', '7','-1','null', '" + zaspa + "', '54.390293', '18.599415', '0', 'null', 'null'";
+            String values11 = "'" + DbConstans.OLDAIRPORT + "', 'Dziedzictwo dzielnicy', '3','-1','null', '" + zaspa + "', '54.399636', '18.606868', '0', 'null', 'null'";
+            String values12 = "'" + DbConstans.POPE + "', 'Papież Polak', '5','-1','null', '" + zaspa + "', '54.399196', '18.595927', '0', 'null', 'null'";
+            String values13 = "'" + DbConstans.FALOWIEC + "', 'Falowiec', '5','-1','null', '" + przymorze + "', '54.415966', '18.586301', '0', 'null', 'null'";
+            String values14 = "'" + DbConstans.BALTIC + "', 'Bałtyk', '6','-1','null', '" + przymorze + "', '54.409423', '18.575863', '0', 'null', 'null'";
 
-            //                TASK_ID,      TASK_NAME,    MAX_Points, AchivedPoints, used prompts, group, lat:lng, isActive, dateofActivation, dateOfcompletion
+            //                TASK_ID,      TASK_NAME,    MAX_Points, AchivedPoints, used prompts, group, lat', 'lng, isActive, dateofActivation, dateOfcompletion
             //															init -1
 
             String gvalue1 = "'1','zabianka','#AA4444'";
@@ -228,6 +287,14 @@ public class DbHandler {
             String query13 = queryStart + values13 + queryEnd;
             String query14 = queryStart + values14 + queryEnd;
 
+            String qaInsert1 =
+            Joiner.on(" ").join("insert into", DbConstans.QA_TABLE,"(",
+                    DbConstans.KEY_QA_ID, ",", DbConstans.KEY_TASK_REF_ID, ",",
+                    DbConstans.KEY_QUESTION, ",", DbConstans.KEY_ANSWER,
+                    ") values (1, 1, 'ile masz lat?','6');");
+
+
+            db.execSQL(qaInsert1);
 
             db.execSQL(query1);
             db.execSQL(query2);
@@ -251,7 +318,7 @@ public class DbHandler {
 
         @Override
         public void onUpgrade(SQLiteDatabase _db, int oldVer, int newVer) {
-            _db.execSQL("DROP TABLE IF EXIST " + DbConstans.LOCATIONS_TABLE);
+//            _db.execSQL("DROP TABLE IF EXIST " + DbConstans.LOCATIONS_TABLE);
             _db.execSQL("DROP TABLE IF EXIST " + DbConstans.MARKER_TABLE);
             _db.execSQL("DROP TABLE IF EXIST " + DbConstans.TASKS_TABLE);
             _db.execSQL("DROP TABLE IF EXIST " + DbConstans.ALERTS_TABLE);

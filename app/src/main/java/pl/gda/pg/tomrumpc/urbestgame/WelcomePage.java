@@ -15,17 +15,20 @@ import android.widget.Switch;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.common.base.Joiner;
 
 import pl.gda.pg.tomrumpc.urbestgame.navigation.Navigator;
+import pl.gda.pg.tomrumpc.urbestgame.task.QATask;
 import pl.gda.pg.tomrumpc.urbestgame.ui.TasksViewer;
 
 public class WelcomePage extends AppCompatActivity {
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+    GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +37,18 @@ public class WelcomePage extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        map = ((SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map)).getMap();
+
+        map.setMyLocationEnabled(true);
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(54.407396, 18.591902)).zoom(12).bearing(0)
+                .tilt(30) // Sets the tilt of the camera to 30 degrees
+                .build(); // Creates a CameraPosition from the builder
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        Joiner.on(".").join("adfas", "asdfaf");
     }
 
     @Override
@@ -68,6 +72,9 @@ public class WelcomePage extends AppCompatActivity {
             case R.id.menu_tasks_list:
                 startActivity(new Intent(this, TasksViewer.class));
                 return true;
+            case R.id.qatask:
+                startActivity(new Intent(this, QATask.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -76,40 +83,11 @@ public class WelcomePage extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "WelcomePage Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://pl.gda.pg.tomrumpc.urbestgame/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "WelcomePage Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://pl.gda.pg.tomrumpc.urbestgame/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 }

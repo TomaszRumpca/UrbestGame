@@ -4,7 +4,20 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Task {
 
+    public enum State {
+        LOCKED(0),
+        ACTIVE(1),
+        DONE(2);
 
+        int choice;
+        State(int i){
+            this.choice = i;
+        }
+
+        public int getValue(){
+            return this.choice;
+        }
+    }
     public int id;
     public String taskName;
     public int maxPoints;

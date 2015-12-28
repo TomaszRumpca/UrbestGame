@@ -26,7 +26,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
-        android:contentDescription="@string/task"
+        android:contentDescription="@string/header_title"
         android:src="@drawable/lock" />
 
     <TextView
@@ -48,7 +48,7 @@
         android:layout_height="20dp"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/points"
-        android:contentDescription="@string/task"
+        android:contentDescription="@string/header_title"
         android:src="@drawable/check"
         android:visibility="invisible" />
 

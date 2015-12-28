@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/headerTitle"
+        style="@style/headerTitleStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/header_tag"
+        android:text="@string/header_title" />
+    <!--android:drawableLeft="@drawable/iko1"-->
+
+    <View
+        android:id="@+id/horizontalTitleLine"
+        style="@style/lineBackground"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/headerTitle" />
+
+    <LinearLayout
+        android:id="@+id/taskHeaderPointsAbbr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/horizontalTitleLine"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/headerPoints"
+            style="@style/headerPointsStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/header_tag" />
+
+        <View
+            android:id="@+id/verticalHeaderLine"
+            style="@style/lineBackground"
+            android:layout_width="2dp"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/promptIcon"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/info"
+            android:contentDescription="@string/header_tag"
+            android:visibility="invisible" />
+
+        <View
+            android:id="@+id/verticalHeaderLine2"
+            style="@style/lineBackground"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+
+        <RelativeLayout
+            android:id="@+id/abbrRelativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/headerAbbr"
+                style="@style/headerAbbrStyle"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/lockIcon"
+                android:contentDescription="@string/header_tag"
+                android:text="@string/lock" />
+
+            <ImageView
+                android:id="@+id/lockIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/lock"
+                android:contentDescription="@string/header_tag" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/horizontalTitleLine2"
+        style="@style/lineBackground"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/taskHeaderPointsAbbr" />
+
+    <TextView
+        android:id="@+id/headerDescription"
+        style="@style/headerDescriptionStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/horizontalTitleLine2"
+        android:contentDescription="@string/header_tag" />
+
+    <View
+        android:id="@+id/horizontalTitleLine3"
+        style="@style/lineBackground"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/headerDescription" />
+
+</RelativeLayout>

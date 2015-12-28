@@ -1,5 +1,6 @@
 package pl.gda.pg.tomrumpc.urbestgame.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -17,12 +18,14 @@ import java.util.Map;
 
 import pl.gda.pg.tomrumpc.urbestgame.Constans;
 import pl.gda.pg.tomrumpc.urbestgame.R;
+import pl.gda.pg.tomrumpc.urbestgame.Task;
 import pl.gda.pg.tomrumpc.urbestgame.adapter.TasksAdapter;
 import pl.gda.pg.tomrumpc.urbestgame.db.DbFacade;
+import pl.gda.pg.tomrumpc.urbestgame.task.QATask;
 
 public class TasksViewer extends Activity implements OnItemClickListener {
 
-    static public String TAG = "TasksViewer";
+     static public String TAG = "TasksViewer";
 
     private ListView tasksList;
 
@@ -113,7 +116,19 @@ public class TasksViewer extends Activity implements OnItemClickListener {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TasksAdapter.ViewHolder holder = (TasksAdapter.ViewHolder) view.getTag();
         String title = holder.title.getText().toString();
-        //TODO onItemClick
+
+        if(db.isTaskActive(title)){
+            Intent intent = new Intent(getApplicationContext(), QATask.class);
+            Bundle bundle = new Bundle();
+            Task task = db.getTask(title);
+            bundle.putString(getResources().getString(R.string.task_title),title);
+            bundle.putString(getResources().getString(R.string.task_points),String.valueOf(task.getMaxPoints()));
+            bundle.putString(getResources().getString(R.string.task_description),"description");
+            bundle.putString(getResources().getString(R.string.task_abbr),"xxx");
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
     }
 
 }

@@ -13,4 +13,9 @@
         android:orderInCategory="99"
         android:title="@string/menu_task_list"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/qatask"
+        android:orderInCategory="98"
+        android:title="qatask"
+        app:showAsAction="never" />
 </menu>

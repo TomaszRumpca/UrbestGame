@@ -6,5 +6,15 @@
     <string name="tasks">Tasks</string>
     <string name="default_done_tasks">0/0</string>
     <string name="all">All</string>
-    <string name="task">Task</string>
+    <string name="header_title">Task</string>
+    <string name="title_activity_qatask">QATask</string>
+    <string name="save">Save</string>
+    <string name="prompt">prompt icon</string>
+    <string name="lock">locked</string>
+    <string name="is_active">is active</string>
+    <string name="header_tag">headerTag</string>
+    <string name="task_abbr">taskAbbr</string>
+    <string name="task_description">taskDesc</string>
+    <string name="task_points">taskPoints</string>
+    <string name="task_title">taskTitle</string>
 </resources>
