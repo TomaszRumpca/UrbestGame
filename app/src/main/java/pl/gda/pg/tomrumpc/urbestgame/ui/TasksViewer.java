@@ -22,6 +22,8 @@ import pl.gda.pg.tomrumpc.urbestgame.task.adapter.TasksAdapter;
 import pl.gda.pg.tomrumpc.urbestgame.data.DbFacade;
 import pl.gda.pg.tomrumpc.urbestgame.task.model.QATask;
 
+import static pl.gda.pg.tomrumpc.urbestgame.task.Task.Type.QA;
+
 public class TasksViewer extends AbstractUrbestActivity implements OnItemClickListener {
 
     static public String TAG = "TasksViewer";
@@ -120,14 +122,23 @@ public class TasksViewer extends AbstractUrbestActivity implements OnItemClickLi
         TasksAdapter.ViewHolder holder = (TasksAdapter.ViewHolder) view.getTag();
         String title = holder.title.getText().toString();
 
-        if (db.isTaskActive(title)) {
-            Intent intent = new Intent(getApplicationContext(), QATask.class);
+        Task task = db.getTask(title);
+
+        if (task != null && task.isActive()) {
+            Class clazz;
+            switch (task.getTaskType()){
+                case QA:
+                    clazz = QATask.class;
+                    break;
+                default:
+                    throw new RuntimeException("Unknown task type");
+            }
+            Intent intent = new Intent(getApplicationContext(), clazz);
             Bundle bundle = new Bundle();
-            Task task = db.getTask(title);
             bundle.putString(getResources().getString(R.string.task_title), title);
             bundle.putString(getResources().getString(R.string.task_points),
                     String.valueOf(task.getMaxPoints()));
-            bundle.putString(getResources().getString(R.string.task_description), "description");
+            bundle.putString(getResources().getString(R.string.task_description), task.getTaskDescription());
             bundle.putString(getResources().getString(R.string.task_abbr), "xxx");
             intent.putExtras(bundle);
             startActivity(intent);

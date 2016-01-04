@@ -10,50 +10,17 @@ public class DbConstans {
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "urbest.db";
 
-//    public static final String LOCATIONS_TABLE = "Locations";
-//
-//    public static final int LATITUDE_COLUMN = 0;
-//    public static final int LONGITUDE_COLUMN = 1;
-//    public static final int DATE_COLUMN = 2;
-//
-//    public static final String KEY_ID = "_id";
-//    public static final String ID_OPTION = "INTEGER PRIMARY KEY AUTOINCREMENT";
-//
-//    public static final String KEY_LATITUDE = "latitude";
-//    public static final String LATITUDE_OPTION = "REAL NOT NULL";
-//
-//    public static final String KEY_LONGITUDE = "longitude";
-//    public static final String LONGITUDE_OPTION = "REAL NOT NULL";
-//
-//    public static final String KEY_DATE = "date";
-//    public static final String DATE_OPTION = "TEXT NOT NULL";
-//
-//    public static final String CREATE_LOCATION_TABLE = "create table "
-//            , LOCATIONS_TABLE , " (" , KEY_ID , " " , ID_OPTION , ", "
-//            , KEY_LATITUDE , " " , LATITUDE_OPTION , ", " , KEY_LONGITUDE , " "
-//            , LONGITUDE_OPTION , ", " , KEY_DATE , " " , DATE_OPTION , ");";
-
-    /////////////////////////////////////////////////////////
 
     public static final String TASKS_TABLE = "Tasks";
-
-    public static final int TASK_ID_COLUMN = 0;
-    public static final int TASK_COLUMN = 1;
-    public static final int MAX_POINTS_COLUMN = 2;
-    public static final int ACHIVED_POINTS_COLUMN = 3;
-    public static final int USED_PROMPTS_COLUMN = 4;
-    public static final int DISTRICT_COLUMN = 5;
-    public static final int LATLNG_COLUMN = 6;
-    public static final int STATE_COLUMN = 7;
-    public static final int DATE_OF_ACTIVATION_COLUMN = 8;
-    public static final int DATE_OF_COMPLETION_COLUMN = 9;
-
 
     public static final String KEY_TASK_ID = "_id";
     public static final String TASK_ID_OPTION = "INTEGER PRIMARY KEY";
 
     public static final String KEY_TASK = "Task";
     public static final String TASK_OPTION = "TEXT NOT NULL";
+
+    public static final String KEY_TASK_DESCRIPTION = "desc";
+    public static final String TASK_DESCRIPTION_OPTION = "TEXT NOT NULL";
 
     public static final String KEY_MAX_POINTS = "maxPoints";
     public static final String MAX_POINTS_OPTION = "INTEGER NOT NULL";
@@ -90,6 +57,7 @@ public class DbConstans {
             Joiner.on(" ").join("create table", TASKS_TABLE, "(",
                     KEY_TASK_ID, TASK_ID_OPTION, ",",
                     KEY_TASK, TASK_OPTION, ",",
+                    KEY_TASK_DESCRIPTION, TASK_DESCRIPTION_OPTION, ",",
                     KEY_MAX_POINTS, MAX_POINTS_OPTION, ",",
                     KEY_ACHIEVED_POINTS, ACHIEVED_POINTS_OPTION, ",",
                     KEY_USED_PROMPTS, USED_PROMPTS_OPTION, ",",
@@ -136,12 +104,6 @@ public class DbConstans {
     ///////////////////////////////////////////////////////////////
     public static final String MARKER_TABLE = "Markers";
 
-    public static final int MARKER_ID_COLUMN = 0;
-    public static final int MARKER_LATITUDE_COLUMN = 1;
-    public static final int MARKER_LONGITUDE_COLUMN = 2;
-    public static final int MARKER_TASK_COLUMN = 3;
-    public static final int MARKER_DRAGGABLE_COLUMN = 4;
-
     public static final String KEY_MARKER_ID = "_id";
     public static final String MARKER_ID_OPTION = "TEXT NOT NULL";
 
@@ -167,35 +129,6 @@ public class DbConstans {
                     KEY_MARKER_DRAGGABLE, MARKER_DRAGGABLE_OPTION, ");");
     //@formatter:on
 
-    //////////////////////////////////////////////////////
-    public static final String ALERTS_TABLE = "Alerts";
-
-    public static final int ALERT_TYPE_COLUMN = 0;
-    public static final int ALERT_CONTENT_COLUMN = 1;
-    public static final int ALERT_TIME_COLUMN = 2;
-
-    public static final String KEY_ALERT_ID = "_id";
-    public static final String ALERT_ID_OPTION = "INTEGER AUTO INCREMENT";
-
-    public static final String KEY_ALERT_TYPE = "Type";
-    public static final String ALERT_TYPE_OPTION = "INTEGER NOT NULL";
-
-    public static final String KEY_ALERT_CONTENT = "Content";
-    public static final String ALERT_CONTENT_OPTION = "TEXT NOT NULL";
-
-    public static String KEY_ALERT_TIME = "Time";
-    public static final String ALERT_TIME_OPTION = "TEXT NOT NULL";
-
-    //@formatter:off
-    public static final String CREATE_ALERTS_TABLE =
-            Joiner.on(" ").join("create table", ALERTS_TABLE, "(",
-                    KEY_ALERT_ID, ALERT_ID_OPTION, ",",
-                    KEY_ALERT_TYPE, ALERT_TYPE_OPTION, ",",
-                    KEY_ALERT_CONTENT, ALERT_CONTENT_OPTION, ",",
-                    KEY_ALERT_TIME, ALERT_TIME_OPTION, ");");
-    //@formatter:on
-
-    //////////////////////////////////////////////////////
 
     public static final String TASK_GROUPS_TABLE = "task_groups";
 

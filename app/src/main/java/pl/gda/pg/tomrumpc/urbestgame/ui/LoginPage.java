@@ -11,14 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-import org.json.JSONArray;
-import org.json.JSONException;
 import pl.gda.pg.tomrumpc.urbestgame.R;
 
 public class LoginPage extends Activity {

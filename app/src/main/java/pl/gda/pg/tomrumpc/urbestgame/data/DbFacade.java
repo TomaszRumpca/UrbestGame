@@ -1,5 +1,6 @@
 package pl.gda.pg.tomrumpc.urbestgame.data;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -8,18 +9,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.net.Uri;
 import pl.gda.pg.tomrumpc.urbestgame.Constans;
 import pl.gda.pg.tomrumpc.urbestgame.task.Task;
 
 public class DbFacade {
 
 
+    private static final String URL = "content://" + GameDataProvider.AUTHORITY + "/";
+    private static final Uri CONTENT_URI_PREFIX = Uri.parse(URL);
+
     private static DbHandler db;
+    private ContentResolver contentResolver;
 
     public DbFacade(Context context) {
         if (db == null) {
             db = new DbHandler(context);
+            contentResolver = context.getContentResolver();
         }
+        contentResolver = context.getContentResolver();
     }
 
     public ArrayList<String> getTaskGroupNames() {
@@ -55,21 +63,7 @@ public class DbFacade {
 
     public List<Task> getTasks(String groupName) {
 
-        final List<Task> tasks = new ArrayList<>();
-
-        final String[] projection = new String[]{DbConstans.KEY_TASK, DbConstans.KEY_ACHIEVED_POINTS,
-                DbConstans.KEY_MAX_POINTS, DbConstans.KEY_STATE, DbConstans.KEY_GROUP_COLOR};
         final String sortOrder = DbConstans.KEY_TASK_ID + " ASC";
-
-        final Map<String, String> projectionMap = new HashMap<>();
-        projectionMap.put(DbConstans.KEY_TASK, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_TASK);
-        projectionMap.put(DbConstans.KEY_ACHIEVED_POINTS, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_ACHIEVED_POINTS);
-        projectionMap.put(DbConstans.KEY_MAX_POINTS, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_MAX_POINTS);
-        projectionMap.put(DbConstans.KEY_STATE, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_STATE);
-        projectionMap.put(DbConstans.KEY_TASK_GROUP, DbConstans.TASKS_TABLE + "." + DbConstans.KEY_TASK_GROUP);
-        projectionMap.put(DbConstans.KEY_GROUP_NAME, DbConstans.TASK_GROUPS_TABLE + "." + DbConstans.KEY_GROUP_NAME);
-        projectionMap.put(DbConstans.KEY_GROUP_ID, DbConstans.TASK_GROUPS_TABLE + "." + DbConstans.KEY_GROUP_ID);
-        projectionMap.put(DbConstans.KEY_GROUP_COLOR, DbConstans.TASK_GROUPS_TABLE + "." + DbConstans.KEY_GROUP_COLOR);
 
         String selection = null;
         String[] selectionArgs = null;
@@ -79,44 +73,85 @@ public class DbFacade {
             selectionArgs = new String[]{groupName};
         }
 
-        db.open();
+        Uri uri = Uri.parse(CONTENT_URI_PREFIX + "/tasks");
+        Cursor cursor = contentResolver
+                .query(uri, getDefaultTaskProjection(), selection, selectionArgs, sortOrder);
 
-        final Cursor cursor = db.getAllTasks(projectionMap, projection, selection, selectionArgs, sortOrder);
-
+        final List<Task> tasks = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                final Task task = new Task();
-                task.setTaskName(cursor.getString(0));
-                task.setAchivedPoints(cursor.getInt(1));
-                task.setMaxPoints(cursor.getInt(2));
-                task.setState(cursor.getInt(3));
-                task.setColor(cursor.getString(4));
-                tasks.add(task);
+                tasks.add(getTaskFromCursor(cursor));
             } while (cursor.moveToNext());
             cursor.close();
         }
-
-        db.close();
 
         return tasks;
     }
 
     public Task getTask(String title) {
 
-        Task task = new Task();
-        db.open();
+        String selection = DbConstans.KEY_TASK + " = ?";
+        String[] selectionArgs = new String[]{title};
 
-        Cursor cursor = db.getTask(title);
+        Uri uri = Uri.parse(CONTENT_URI_PREFIX + "/tasks");
+        Cursor cursor = contentResolver
+                .query(uri, getDefaultTaskProjection(), selection, selectionArgs, null);
+
+        Task task = null;
 
         if (cursor != null && cursor.moveToFirst()) {
-            task.setTaskName(cursor.getString(0));
-            task.setMaxPoints(cursor.getInt(1));
+            task = getTaskFromCursor(cursor);
             cursor.close();
         }
 
-        db.close();
         return task;
     }
+
+
+    private String[] getDefaultTaskProjection(){
+        //@formatter:off
+        return new String[]{
+                DbConstans.KEY_TASK_ID,
+                DbConstans.KEY_TASK,
+                DbConstans.KEY_TASK_DESCRIPTION,
+                DbConstans.KEY_MAX_POINTS,
+                DbConstans.KEY_ACHIEVED_POINTS,
+                DbConstans.KEY_USED_PROMPTS,
+                DbConstans.KEY_TASK_TYPE,
+                DbConstans.KEY_LATITUDE,
+                DbConstans.KEY_LONGITUDE,
+                DbConstans.KEY_STATE,
+                DbConstans.KEY_DATE_OF_ACTIVATION,
+                DbConstans.KEY_DATE_OF_COMPLETION,
+                DbConstans.KEY_GROUP_NAME,
+                DbConstans.KEY_GROUP_ID,
+                DbConstans.KEY_GROUP_COLOR};
+        //@formatter:on
+    }
+    private Task getTaskFromCursor(Cursor cursor){
+        return Task.builder()
+                .taskId(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_TASK_ID)))
+                .taskName(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_TASK)))
+                .maxPoints(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_MAX_POINTS)))
+                .achivedPoints(cursor.getInt(
+                        cursor.getColumnIndex(DbConstans.KEY_ACHIEVED_POINTS))).usedPrompts(
+                        cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_USED_PROMPTS)))
+                .taskType(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_TASK_TYPE)))
+                .latitude(cursor.getDouble(cursor.getColumnIndex(DbConstans.KEY_LATITUDE)))
+                .longitude(
+                        cursor.getDouble(cursor.getColumnIndex(DbConstans.KEY_LONGITUDE)))
+                .state(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_STATE)))
+                .dateOfActivation(cursor.getString(
+                        cursor.getColumnIndex(DbConstans.KEY_DATE_OF_ACTIVATION)))
+                .dateOfCompletion(cursor.getString(
+                        cursor.getColumnIndex(DbConstans.KEY_DATE_OF_COMPLETION)))
+                .groupId(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_GROUP_ID)))
+                .groupName(
+                        cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_NAME)))
+                .color(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_COLOR)))
+                .build();
+    }
+
 
     public boolean submitAnswer(String taskName, String answer) {
 

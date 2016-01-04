@@ -16,13 +16,15 @@ import pl.gda.pg.tomrumpc.urbestgame.task.Task;
 import pl.gda.pg.tomrumpc.urbestgame.data.DbConstans;
 import pl.gda.pg.tomrumpc.urbestgame.data.DbFacade;
 
+import static pl.gda.pg.tomrumpc.urbestgame.task.Task.State.ACTIVE;
+
 public class TasksAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     String groupName;
     int itemCount = 0;
     List<Task> tasks;
-    private int[] colors = {0xFFf2f2f2, 0xFFe8e8e8};
+    private int[] backgroundColors = {0xFFf2f2f2, 0xFFe8e8e8};
 
 
     public TasksAdapter(Context context, String groupId) {
@@ -70,16 +72,16 @@ public class TasksAdapter extends BaseAdapter {
         holder.icon.setBackgroundColor(Color.parseColor(cTask.getColor()));
 
         switch (cTask.getState()) {
-            case DbConstans.TASK_ACTIVE:
+            case ACTIVE:
                 holder.lockIcon.setImageResource(R.drawable.unlock);
                 break;
-            case DbConstans.TASK_FOR_APPROVAL:
+            case WAITING_FOR_APPROVAL:
                 holder.lockIcon.setImageResource(R.drawable.question);
                 break;
-            case DbConstans.TASK_UNDISCOVERED:
+            case LOCKED:
                 holder.lockIcon.setImageResource(R.drawable.lock);
                 break;
-            case DbConstans.TASK_DONE:
+            case DONE:
                 holder.checkedIcon.setVisibility(View.VISIBLE);
                 holder.lockIcon.setImageResource(R.drawable.lock);
                 break;
@@ -89,8 +91,8 @@ public class TasksAdapter extends BaseAdapter {
 
         convertView.setTag(holder);
 
-        int posColor = position % colors.length;
-        convertView.setBackgroundColor(this.colors[posColor]);
+        int posColor = position % backgroundColors.length;
+        convertView.setBackgroundColor(this.backgroundColors[posColor]);
 
         return convertView;
     }
