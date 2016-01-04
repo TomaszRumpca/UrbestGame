@@ -1,4 +1,4 @@
-package pl.gda.pg.tomrumpc.urbestgame;
+package pl.gda.pg.tomrumpc.urbestgame.task;
 
 import com.google.android.gms.maps.model.LatLng;
 

@@ -1,4 +1,4 @@
-package pl.gda.pg.tomrumpc.urbestgame.db;
+package pl.gda.pg.tomrumpc.urbestgame.data;
 
 import com.google.common.base.Joiner;
 
@@ -94,6 +94,7 @@ public class DbConstans {
                     KEY_ACHIEVED_POINTS, ACHIEVED_POINTS_OPTION, ",",
                     KEY_USED_PROMPTS, USED_PROMPTS_OPTION, ",",
                     KEY_TASK_GROUP, TASK_GROUP_OPTION, ",",
+                    KEY_TASK_TYPE, TASK_TYPE_OPTION, ",",
                     KEY_LATITUDE, LATITUDE_OPTION, ",",
                     KEY_LONGITUDE, LONGITUDE_OPTION, ",",
                     KEY_STATE, STATE_OPTION, ",",

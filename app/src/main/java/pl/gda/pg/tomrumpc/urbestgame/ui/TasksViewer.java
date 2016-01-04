@@ -2,7 +2,6 @@ package pl.gda.pg.tomrumpc.urbestgame.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,14 +17,14 @@ import java.util.Map;
 
 import pl.gda.pg.tomrumpc.urbestgame.Constans;
 import pl.gda.pg.tomrumpc.urbestgame.R;
-import pl.gda.pg.tomrumpc.urbestgame.Task;
-import pl.gda.pg.tomrumpc.urbestgame.adapter.TasksAdapter;
-import pl.gda.pg.tomrumpc.urbestgame.db.DbFacade;
-import pl.gda.pg.tomrumpc.urbestgame.task.QATask;
+import pl.gda.pg.tomrumpc.urbestgame.task.Task;
+import pl.gda.pg.tomrumpc.urbestgame.task.adapter.TasksAdapter;
+import pl.gda.pg.tomrumpc.urbestgame.data.DbFacade;
+import pl.gda.pg.tomrumpc.urbestgame.task.model.QATask;
 
-public class TasksViewer extends Activity implements OnItemClickListener {
+public class TasksViewer extends AbstractUrbestActivity implements OnItemClickListener {
 
-     static public String TAG = "TasksViewer";
+    static public String TAG = "TasksViewer";
 
     private ListView tasksList;
 
@@ -38,9 +37,10 @@ public class TasksViewer extends Activity implements OnItemClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        db = new DbFacade(getApplicationContext());
+        stub.setLayoutResource(R.layout.content_tasks_viewer);
+        stub.inflate();
 
-        setContentView(R.layout.activity_tasks_viewer);
+        db = new DbFacade(getApplicationContext());
 
         final List<String> groupNames = db.getTaskGroupNames();
 
@@ -64,7 +64,8 @@ public class TasksViewer extends Activity implements OnItemClickListener {
         taskGroups.get(Constans.DEFAULT_TASK_GROUP_NAME).setOnClickListener(onClickListener);
 
         for (String name : groupNames) {
-            TextView groupTab = (TextView) getLayoutInflater().inflate(R.layout.template_task_group, null);
+            TextView groupTab =
+                    (TextView) getLayoutInflater().inflate(R.layout.template_task_group, null);
             groupTab.setText(name);
             groupTab.setOnClickListener(onClickListener);
             taskGroups.put(name, groupTab);
@@ -72,13 +73,14 @@ public class TasksViewer extends Activity implements OnItemClickListener {
         }
     }
 
+
     private void reloadList(String activeTaskGroup) {
         for (Map.Entry entry : taskGroups.entrySet()) {
             int styleId;
             if (activeTaskGroup.equals(entry.getKey())) {
-                styleId = R.style.districtTextStyleActive;
+                styleId = R.style.groupTextStyleActive;
             } else {
-                styleId = R.style.districtTextStyle;
+                styleId = R.style.groupTextStyle;
             }
             ((TextView) entry.getValue()).setTextAppearance(getApplicationContext(), styleId);
         }
@@ -89,7 +91,8 @@ public class TasksViewer extends Activity implements OnItemClickListener {
 
     private void LoadPreferences() {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        activeTaskGroup = sharedPreferences.getString("activeTaskGroup", Constans.DEFAULT_TASK_GROUP_NAME);
+        activeTaskGroup =
+                sharedPreferences.getString("activeTaskGroup", Constans.DEFAULT_TASK_GROUP_NAME);
     }
 
     public void SavePreferences() {
@@ -117,14 +120,15 @@ public class TasksViewer extends Activity implements OnItemClickListener {
         TasksAdapter.ViewHolder holder = (TasksAdapter.ViewHolder) view.getTag();
         String title = holder.title.getText().toString();
 
-        if(db.isTaskActive(title)){
+        if (db.isTaskActive(title)) {
             Intent intent = new Intent(getApplicationContext(), QATask.class);
             Bundle bundle = new Bundle();
             Task task = db.getTask(title);
-            bundle.putString(getResources().getString(R.string.task_title),title);
-            bundle.putString(getResources().getString(R.string.task_points),String.valueOf(task.getMaxPoints()));
-            bundle.putString(getResources().getString(R.string.task_description),"description");
-            bundle.putString(getResources().getString(R.string.task_abbr),"xxx");
+            bundle.putString(getResources().getString(R.string.task_title), title);
+            bundle.putString(getResources().getString(R.string.task_points),
+                    String.valueOf(task.getMaxPoints()));
+            bundle.putString(getResources().getString(R.string.task_description), "description");
+            bundle.putString(getResources().getString(R.string.task_abbr), "xxx");
             intent.putExtras(bundle);
             startActivity(intent);
         }

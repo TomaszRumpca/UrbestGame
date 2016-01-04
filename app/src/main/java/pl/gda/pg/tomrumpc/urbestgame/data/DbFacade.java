@@ -1,4 +1,4 @@
-package pl.gda.pg.tomrumpc.urbestgame.db;
+package pl.gda.pg.tomrumpc.urbestgame.data;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import pl.gda.pg.tomrumpc.urbestgame.Constans;
-import pl.gda.pg.tomrumpc.urbestgame.Task;
+import pl.gda.pg.tomrumpc.urbestgame.task.Task;
 
 public class DbFacade {
 

@@ -1,4 +1,4 @@
-package pl.gda.pg.tomrumpc.urbestgame.db;
+package pl.gda.pg.tomrumpc.urbestgame.data;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -246,8 +246,8 @@ public class DbHandler {
                     + ") VALUES (";
             String queryEnd = ");";
 
-            String values1 = "'" + DbConstans.INVESTMENT_AREA + "', 'Warzywniak', '6','-1','null', '" + zaspa + "', '54.396575', '18.585299', '0', 'null', 'null'";
-            String values2 = "'" + DbConstans.SCULPTURES + "', 'Sztuka w przestrzeni', '5','-1','null', '" + zabianka + "', '54.420478', '18.57427', '0', 'null', 'null'";
+            String values1 = "'" + DbConstans.INVESTMENT_AREA + "', 'Warzywniak', '6','-1','null', '" + zaspa + "', '54.396575', '18.585299', '1', 'null', 'null'";
+            String values2 = "'" + DbConstans.SCULPTURES + "', 'Sztuka w przestrzeni', '5','-1','null', '" + zabianka + "', '54.420478', '18.57427', '1', 'null', 'null'";
             String values3 = "'" + DbConstans.RIDDLE + "', 'Kładka', '4','-1','null', '" + zaspa + "', '54.394339', '18.601804', '0', 'null', 'null'";
             String values4 = "'" + DbConstans.FOUNTAIN + "', 'Połamany Herbatnik', '4','-1','null', '" + zabianka + "', '54.420540', '18.575585', '0', 'null', 'null'";
             String values5 = "'" + DbConstans.PLAYING_FIELD + "', 'Piłka w grze!', '10','-1','null', '" + zabianka + "', '54.420202', '18.583375', '0', 'null', 'null'";

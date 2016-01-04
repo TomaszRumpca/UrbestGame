@@ -1,4 +1,4 @@
-package pl.gda.pg.tomrumpc.urbestgame.task;
+package pl.gda.pg.tomrumpc.urbestgame.task.model;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import pl.gda.pg.tomrumpc.urbestgame.R;
-import pl.gda.pg.tomrumpc.urbestgame.db.DbFacade;
+import pl.gda.pg.tomrumpc.urbestgame.data.DbFacade;
 
 public class QATask extends AppCompatActivity {
 

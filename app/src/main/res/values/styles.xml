@@ -18,18 +18,18 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
-    <style name="districtTextStyle">
+    <style name="groupTextStyle">
         <item name="android:textColor">#FF868686</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">10dp</item>
         <item name="android:paddingRight">0dp</item>
         <item name="android:paddingLeft">15dp</item>
     </style>
 
-    <style name="districtTextStyleActive">
+    <style name="groupTextStyleActive">
         <item name="android:textColor">#FF454545</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">10dp</item>
         <item name="android:paddingRight">0dp</item>

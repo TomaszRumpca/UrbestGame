@@ -1,4 +1,4 @@
-package pl.gda.pg.tomrumpc.urbestgame.adapter;
+package pl.gda.pg.tomrumpc.urbestgame.task.adapter;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import pl.gda.pg.tomrumpc.urbestgame.R;
-import pl.gda.pg.tomrumpc.urbestgame.Task;
-import pl.gda.pg.tomrumpc.urbestgame.db.DbConstans;
-import pl.gda.pg.tomrumpc.urbestgame.db.DbFacade;
+import pl.gda.pg.tomrumpc.urbestgame.task.Task;
+import pl.gda.pg.tomrumpc.urbestgame.data.DbConstans;
+import pl.gda.pg.tomrumpc.urbestgame.data.DbFacade;
 
 public class TasksAdapter extends BaseAdapter {
 
