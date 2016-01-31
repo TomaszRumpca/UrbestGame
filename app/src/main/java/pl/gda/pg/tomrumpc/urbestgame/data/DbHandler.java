@@ -48,37 +48,36 @@ public class DbHandler {
 //    public Cursor getAllEntries(String fromTable, String[] projection, String sortOrder) {
 //       return db.query(fromTable, projection, null, null, null, null, sortOrder);
 //    }
-
-    public Cursor getAllEntries(String fromTable) {
+//
+//    public Cursor getAllEntries(String fromTable) {
 
 //        if (fromTable.equals(DbConstans.LOCATIONS_TABLE)) {
 //            String[] columns = {DbConstans.KEY_LATITUDE, DbConstans.KEY_LONGITUDE, DbConstans.KEY_DATE};
 //            return db.query(DbConstans.LOCATIONS_TABLE, columns, null, null, null, null,
 //                    DbConstans.KEY_DATE);
 //        } else
-        if (fromTable.equals(DbConstans.MARKER_TABLE)) {
-            String[] columns = {DbConstans.KEY_MARKER_ID, DbConstans.KEY_MARKER_LATITUDE,
-                    DbConstans.KEY_MARKER_LONGITUDE, DbConstans.KEY_MARKER_TASK, DbConstans.KEY_MARKER_DRAGGABLE};
-            return db.query(DbConstans.MARKER_TABLE, columns, null, null, null, null,
-                    DbConstans.KEY_MARKER_ID);
-        } else if (fromTable.equals(DbConstans.TASKS_TABLE)) {
-            return db.query(DbConstans.TASKS_TABLE, null, null, null, null, null,
-                    DbConstans.KEY_TASK_ID);
-        } else if (fromTable.equals(DbConstans.TASK_GROUPS_TABLE)) {
-            return db.query(DbConstans.TASK_GROUPS_TABLE, null, null, null, null, null,
-                    DbConstans.KEY_GROUP_ID);
-        } else {
-            return null;
-        }
-
-    }
+//        if (fromTable.equals(DbConstans.MARKER_TABLE)) {
+//            String[] columns = {DbConstans.KEY_MARKER_ID, DbConstans.KEY_MARKER_LATITUDE,
+//                    DbConstans.KEY_MARKER_LONGITUDE, DbConstans.KEY_MARKER_TASK, DbConstans.KEY_MARKER_DRAGGABLE};
+//            return db.query(DbConstans.MARKER_TABLE, columns, null, null, null, null,
+//                    DbConstans.KEY_MARKER_ID);
+//        } else if (fromTable.equals(DbConstans.TASKS_TABLE)) {
+//            return db.query(DbConstans.TASKS_TABLE, null, null, null, null, null,
+//                    DbConstans.KEY_TASK_ID);
+//        } else if (fromTable.equals(DbConstans.TASK_GROUPS_TABLE)) {
+//            return db.query(DbConstans.TASK_GROUPS_TABLE, null, null, null, null, null,
+//                    DbConstans.KEY_GROUP_ID);
+//        } else {
+//            return null;
+//        }
+//
+//    }
 
     public Cursor query(SQLiteQueryBuilder queryBuilder, String[] projection, String selection,
             String[] selectionArgs, String groupBy, String having, String sortOrder) {
         open();
         Cursor cursor = queryBuilder
                 .query(db, projection, selection, selectionArgs, groupBy, having, sortOrder);
-
         return cursor;
     }
 
@@ -93,12 +92,12 @@ public class DbHandler {
 //        return queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 //    }
 
-    public int getCompletedTaskNumber(String groupName) {
-        String[] projection = {DbConstans.KEY_ACHIEVED_POINTS};
-
-
-        return 0;//TODO
-    }
+//    public int getCompletedTaskNumber(String groupName) {
+//        String[] projection = {DbConstans.KEY_ACHIEVED_POINTS};
+//
+//
+//        return 0;//TODO
+//    }
 
 //    public int getDoneTaskCount(float district) {
 //
@@ -130,53 +129,53 @@ public class DbHandler {
 //    }
 
 
-    public long updateTaskAsActive(int taskId) {
-        return activateTask(DbConstans.KEY_TASK_ID + " ='" + taskId + "'");
-    }
-
-    public long updateTaskAsActive(String taskName) {
-        return activateTask(DbConstans.KEY_TASK + " ='" + taskName + "'");
-    }
-
-    private long activateTask(String where) {
-        ContentValues cv = new ContentValues();
-        cv.put(DbConstans.KEY_STATE, 1);
-        return db.update(DbConstans.TASKS_TABLE, cv, where, null);
-    }
-
-
-    public boolean isTaskActive(int taskId) {
-        return queryIfTaskActive(DbConstans.KEY_TASK_ID + " ='" + taskId + "'");
-    }
-
-    public boolean isTaskActive(String taskName) {
-        return queryIfTaskActive(DbConstans.KEY_TASK + " ='" + taskName + "'");
-    }
-
-    private boolean queryIfTaskActive(String selection) {
-        boolean active = false;
-
-        Cursor cursor = db.query(DbConstans.TASKS_TABLE,
-                new String[]{DbConstans.KEY_STATE}, selection, null, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            int i = cursor.getInt(0);
-            if (i == 0) {
-                active = true;
-            }
-        }
-        return active;
-
-    }
-
-    public Cursor getTask(String title) {
-
-        String[] projection = {DbConstans.KEY_TASK, DbConstans.KEY_MAX_POINTS};
-
-        String selection = DbConstans.KEY_TASK + " = '" + title + "'";
-
-        return db.query(DbConstans.TASKS_TABLE, projection, selection, null, null, null, null);
-    }
+//    public long updateTaskAsActive(int taskId) {
+//        return activateTask(DbConstans.KEY_TASK_ID + " ='" + taskId + "'");
+//    }
+//
+//    public long updateTaskAsActive(String taskName) {
+//        return activateTask(DbConstans.KEY_TASK + " ='" + taskName + "'");
+//    }
+//
+//    private long activateTask(String where) {
+//        ContentValues cv = new ContentValues();
+//        cv.put(DbConstans.KEY_STATE, 1);
+//        return db.update(DbConstans.TASKS_TABLE, cv, where, null);
+//    }
+//
+//
+//    public boolean isTaskActive(int taskId) {
+//        return queryIfTaskActive(DbConstans.KEY_TASK_ID + " ='" + taskId + "'");
+//    }
+//
+//    public boolean isTaskActive(String taskName) {
+//        return queryIfTaskActive(DbConstans.KEY_TASK + " ='" + taskName + "'");
+//    }
+//
+//    private boolean queryIfTaskActive(String selection) {
+//        boolean active = false;
+//
+//        Cursor cursor = db.query(DbConstans.TASKS_TABLE,
+//                new String[]{DbConstans.KEY_STATE}, selection, null, null, null, null);
+//
+//        if (cursor.moveToFirst()) {
+//            int i = cursor.getInt(0);
+//            if (i == 0) {
+//                active = true;
+//            }
+//        }
+//        return active;
+//
+//    }
+//
+//    public Cursor getTask(String title) {
+//
+//        String[] projection = {DbConstans.KEY_TASK, DbConstans.KEY_MAX_POINTS};
+//
+//        String selection = DbConstans.KEY_TASK + " = '" + title + "'";
+//
+//        return db.query(DbConstans.TASKS_TABLE, projection, selection, null, null, null, null);
+//    }
 
 //    public Cursor getTaskID(String taskName) {
 //        String[] projection = {DbConstans.KEY_TASK_ID};
@@ -194,12 +193,12 @@ public class DbHandler {
         return db.update(DbConstans.QA_TABLE, cv, taskIdSelection, selectionArgs);
     }
 
-    public Cursor getTaskState(String taskName) {
-        String task = new StringBuilder("'").append(taskName).append("'").toString();
-        String[] projection = {DbConstans.KEY_STATE};
-        String selection = Joiner.on(" ").join(DbConstans.KEY_TASK, "=", task);
-        return db.query(DbConstans.TASKS_TABLE, projection, selection, null, null, null, null);
-    }
+//    public Cursor getTaskState(String taskName) {
+//        String task = new StringBuilder("'").append(taskName).append("'").toString();
+//        String[] projection = {DbConstans.KEY_STATE};
+//        String selection = Joiner.on(" ").join(DbConstans.KEY_TASK, "=", task);
+//        return db.query(DbConstans.TASKS_TABLE, projection, selection, null, null, null, null);
+//    }
 
     public Cursor getAnswer(String taskName) {
         String[] projection = {DbConstans.KEY_ANSWER};

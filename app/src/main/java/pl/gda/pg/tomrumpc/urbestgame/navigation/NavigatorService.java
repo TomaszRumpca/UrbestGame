@@ -6,11 +6,16 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import pl.gda.pg.tomrumpc.urbestgame.task.Task;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NavigatorService extends Service implements SensorEventListener {
 
@@ -21,32 +26,23 @@ public class NavigatorService extends Service implements SensorEventListener {
     float[] mag, acc;
     float[] rotFromBToM = new float[9];
 
-    double[] enu;
+    ArrayList<String> taskNames;
+    Map<String, double[]> tasksECEF;
+    double[] userPosition;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor sGravity = sManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         Sensor sAccelerometr = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         Sensor sMagneticField = sManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-//        sManager.registerListener(this, sGravity, SensorManager.SENSOR_DELAY_UI);
-        sManager.registerListener(this, sMagneticField, SensorManager.SENSOR_DELAY_UI);
-        sManager.registerListener(this, sAccelerometr, SensorManager.SENSOR_DELAY_UI);
+        sManager.registerListener(this, sMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+        sManager.registerListener(this, sAccelerometr, SensorManager.SENSOR_DELAY_NORMAL);
 
+        userPosition = new double[]{54.497378d, 18.502430d, 0f};
 
-        double[] userPosition = new double[]{54.497378d, 18.502430d, 0f};
-
-        enu = NavigationUtils.getENU(
-                NavigationUtils.degreesToRad(userPosition[0]),
-                NavigationUtils.degreesToRad(userPosition[1]),
-                userPosition[2],
-                NavigationUtils.geoCoordinatesToECEF(
-                        NavigationUtils.degreesToRad(54.497388d),
-                        NavigationUtils.degreesToRad(18.502430d),
-                        0d));
     }
 
     @Override
@@ -58,13 +54,25 @@ public class NavigatorService extends Service implements SensorEventListener {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+
+        tasksECEF = new HashMap<>();
+
+        Bundle extras = intent.getExtras();
+        taskNames = extras.getStringArrayList("tasks");
+        for (String taskName : taskNames) {
+            Task task = ((Task) extras.get(taskName));
+            tasksECEF.put(task.getTaskName(), NavigationUtils
+                    .geoCoordinatesToECEF(NavigationUtils.degreesToRad(task.getLatitude()),
+                            NavigationUtils.degreesToRad(task.getLongitude()), 0d));
+        }
+
         return null;
     }
 
 
-    private void sendLocationBroadcast(double[] b) {
+    private void sendLocationBroadcast(Bundle bundle) {
         Intent intent = new Intent(NAVIGATION_SERVICE);
-        intent.putExtra("bearingB", b);
+        intent.putExtras(bundle);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
@@ -88,19 +96,35 @@ public class NavigatorService extends Service implements SensorEventListener {
         if (acc != null && mag != null) {
             boolean success = SensorManager.getRotationMatrix(rotFromBToM, null, acc, mag);
             if (success) {
-                double[] bearingB = NavigationUtils.fromMToB(enu, rotFromBToM);
-                sendLocationBroadcast(bearingB);
+
+                Bundle extras = new Bundle();
+                for (Map.Entry entry : tasksECEF.entrySet()) {
+
+                    double[] enu = NavigationUtils
+                            .getENU(NavigationUtils.degreesToRad(userPosition[0]),
+                                    NavigationUtils.degreesToRad(userPosition[1]), userPosition[2],
+                                    (double[]) entry.getValue());
+
+                    double[] bearingB = NavigationUtils.fromMToB(enu, rotFromBToM);
+                    extras.putDoubleArray(entry.getKey() + "bearingB", bearingB);
+                }
+                extras.putStringArrayList("tasksBearingB",taskNames);
+                sendLocationBroadcast(extras);
+
             }
         }
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
 
-    protected float[] lowPass( float[] input, float[] output ) {
-        if ( output == null ) return input;
+    protected float[] lowPass(float[] input, float[] output) {
+        if (output == null) {
+            return input;
+        }
 
-        for ( int i=0; i<input.length; i++ ) {
+        for (int i = 0; i < input.length; i++) {
             output[i] = output[i] + ALPHA * (input[i] - output[i]);
         }
         return output;

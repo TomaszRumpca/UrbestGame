@@ -10,7 +10,6 @@ public class DbConstans {
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "urbest.db";
 
-
     public static final String TASKS_TABLE = "Tasks";
 
     public static final String KEY_TASK_ID = "_id";
@@ -105,7 +104,7 @@ public class DbConstans {
     public static final String MARKER_TABLE = "Markers";
 
     public static final String KEY_MARKER_ID = "_id";
-    public static final String MARKER_ID_OPTION = "TEXT NOT NULL";
+    public static final String MARKER_ID_OPTION = "INTEGER NOT NULL";
 
     public static final String KEY_MARKER_LATITUDE = "latitude";
     public static final String MARKER_LATITUDE_OPTION = "REAL NOT NULL";
@@ -117,7 +116,7 @@ public class DbConstans {
     public static final String MARKER_DRAGGABLE_OPTION = "INTEGER NOT NULL";
 
     public static String KEY_MARKER_TASK = "task";
-    public static final String MARKER_TASK_OPTION = "INTEGER NOT NULL";
+    public static final String MARKER_TASK_OPTION = "INTEGER";
 
     //@formatter:off
     public static final String CREATE_MARKERS_TABLE =
@@ -131,9 +130,6 @@ public class DbConstans {
 
 
     public static final String TASK_GROUPS_TABLE = "task_groups";
-
-    public static final int GROUP_ID_COLUMN = 0;
-    public static final int GROUP_NAME_COLUMN = 1;
 
     public static final String KEY_GROUP_ID = "id";
     public static final String GROUP_ID_OPTION = "INTEGER AUTO INCREMENT";
@@ -170,13 +166,4 @@ public class DbConstans {
     static public final int BALTIC = 14;
 
     ////////////////////////////////////////////////////////
-    // Task states
-    static public final int TASK_ACTIVE = 0;
-    static public final int TASK_UNDISCOVERED = 1;
-    static public final int TASK_DONE = 2;
-    static public final int TASK_FOR_APPROVAL = 3;
-
-    /////////////////////////////////////////////////////////
-
-
 }

@@ -49,6 +49,25 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 
     @Override
     public void onResponse(JSONArray response) {
+
+        try {
+            String responseType = response.getString(0);
+
+            switch (responseType){
+                default:
+                    break;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < response.length(); i++){
+
+        }
+
+
+        Log.d("URBEST", "Getting the response from server");
         try {
             Log.d("URBEST",response.getString(0));
         } catch (JSONException e) {

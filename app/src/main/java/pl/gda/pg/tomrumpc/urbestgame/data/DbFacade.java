@@ -11,6 +11,7 @@ import java.util.Map;
 
 import android.net.Uri;
 import pl.gda.pg.tomrumpc.urbestgame.Constans;
+import pl.gda.pg.tomrumpc.urbestgame.task.Group;
 import pl.gda.pg.tomrumpc.urbestgame.task.Task;
 
 public class DbFacade {
@@ -30,35 +31,43 @@ public class DbFacade {
         contentResolver = context.getContentResolver();
     }
 
-    public ArrayList<String> getTaskGroupNames() {
+    public List<String> getTaskGroupNames(){
+        List<Group> groups = getTaskGroups();
+        List<String> groupNames = new ArrayList<>(groups.size());
+        for(Group group : groups){
+            groupNames.add(group.getGroupName());
+        }
+        return groupNames;
+    }
 
-        ArrayList<String> names = new ArrayList<>();
+    public List<Group> getTaskGroups() {
 
-        db.open();
+        final String sortOrder = DbConstans.KEY_GROUP_ID + " ASC";
 
-        Cursor cursor = db.getAllEntries(DbConstans.TASK_GROUPS_TABLE);
+        Uri uri = Uri.parse(CONTENT_URI_PREFIX + "/groups");
+        Cursor cursor = contentResolver
+                .query(uri, getDefaultGroupProjection(), null, null, sortOrder);
 
+        final List<Group> groups = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                names.add(cursor.getString(DbConstans.GROUP_NAME_COLUMN));
+                groups.add(getGroupFromCursor(cursor));
             } while (cursor.moveToNext());
             cursor.close();
         }
 
-        db.close();
-
-        return names;
+        return groups;
     }
 
-    public String getTasksCompletionStatus(String currentGroup, int numberOfTasksInGroup) {
+    public Integer getCompletedTasksCount(String group) {
 
-        db.open();
-
-        int count = db.getCompletedTaskNumber(currentGroup);
-
-        db.close();
-
-        return count + "/" + numberOfTasksInGroup;
+        int completed = 0;
+        for(Task task : getTasks(group)){
+            if(Task.State.DONE.equals(task.getState())){
+                completed++;
+            }
+        }
+        return completed;
     }
 
     public List<Task> getTasks(String groupName) {
@@ -128,6 +137,16 @@ public class DbFacade {
                 DbConstans.KEY_GROUP_COLOR};
         //@formatter:on
     }
+
+    private String[] getDefaultGroupProjection(){
+        //@formatter:off
+        return new String[]{
+                DbConstans.KEY_GROUP_NAME,
+                DbConstans.KEY_GROUP_ID,
+                DbConstans.KEY_GROUP_COLOR};
+        //@formatter:on
+    }
+
     private Task getTaskFromCursor(Cursor cursor){
         return Task.builder()
                 .taskId(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_TASK_ID)))
@@ -152,6 +171,14 @@ public class DbFacade {
                 .build();
     }
 
+    private Group getGroupFromCursor(Cursor cursor){
+        return Group.builder()
+                .groupId(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_GROUP_ID)))
+                .groupName(
+                        cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_NAME)))
+                .color(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_COLOR)))
+                .build();
+    }
 
     public boolean submitAnswer(String taskName, String answer) {
 
@@ -165,18 +192,7 @@ public class DbFacade {
     }
 
     public boolean isTaskActive(String taskName) {
-
-        db.open();
-
-        Cursor cursor = db.getTaskState(taskName);
-
-        int taskStatus = -1;
-        if(cursor.moveToFirst()){
-            taskStatus = cursor.getInt(0);
-        }
-
-        db.close();
-        return taskStatus == Task.State.ACTIVE.getValue() ? true : false;
+        return getTask(taskName).isActive() ? true : false;
     }
 
     public String getAnswer(String taskName) {

@@ -22,8 +22,6 @@ import pl.gda.pg.tomrumpc.urbestgame.task.adapter.TasksAdapter;
 import pl.gda.pg.tomrumpc.urbestgame.data.DbFacade;
 import pl.gda.pg.tomrumpc.urbestgame.task.model.QATask;
 
-import static pl.gda.pg.tomrumpc.urbestgame.task.Task.Type.QA;
-
 public class TasksViewer extends AbstractUrbestActivity implements OnItemClickListener {
 
     static public String TAG = "TasksViewer";
@@ -88,7 +86,8 @@ public class TasksViewer extends AbstractUrbestActivity implements OnItemClickLi
         }
         TasksAdapter adapter = new TasksAdapter(getApplicationContext(), activeTaskGroup);
         tasksList.setAdapter(adapter);
-        doneTasksTV.setText(db.getTasksCompletionStatus(activeTaskGroup, tasksList.getCount()));
+        doneTasksTV
+                .setText(db.getCompletedTasksCount(activeTaskGroup) + "/" + tasksList.getCount());
     }
 
     private void LoadPreferences() {

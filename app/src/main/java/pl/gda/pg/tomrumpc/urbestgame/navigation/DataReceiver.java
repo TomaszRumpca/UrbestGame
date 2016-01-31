@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import java.util.List;
+
 
 public class DataReceiver extends BroadcastReceiver {
 
@@ -15,8 +17,7 @@ public class DataReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        double[] b = intent.getDoubleArrayExtra("bearingB");
-        receiver.onPositionChanged(b);
+        receiver.onPositionChanged(intent.getExtras());
     }
 
 }

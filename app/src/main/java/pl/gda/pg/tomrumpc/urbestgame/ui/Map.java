@@ -7,8 +7,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import pl.gda.pg.tomrumpc.urbestgame.R;
-import pl.gda.pg.tomrumpc.urbestgame.ui.AbstractUrbestActivity;
-
 
 public class Map extends AbstractUrbestActivity {
 

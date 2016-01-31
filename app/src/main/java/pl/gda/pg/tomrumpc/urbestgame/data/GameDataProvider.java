@@ -25,6 +25,7 @@ public class GameDataProvider extends ContentProvider {
     private static final int TASKS_ID = 2;
     private static final int GROUPS = 3;
     private static final int GROUPS_ID = 4;
+    private static final int MARKERS = 5;
     DbHandler db;
 
 
@@ -34,6 +35,7 @@ public class GameDataProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, "tasks/#", TASKS_ID);
         uriMatcher.addURI(AUTHORITY, "groups", GROUPS);
         uriMatcher.addURI(AUTHORITY, "groups/#", GROUPS_ID);
+        uriMatcher.addURI(AUTHORITY, "markers", MARKERS);
     }
 
     @Override
@@ -46,27 +48,35 @@ public class GameDataProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
+    
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
-        switch(uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case TASKS:
-            String tables = Joiner.on(" ").join(DbConstans.TASKS_TABLE, "LEFT OUTER JOIN",
+                String tables = Joiner.on(" ").join(DbConstans.TASKS_TABLE, "LEFT OUTER JOIN",
                         DbConstans.TASK_GROUPS_TABLE, "ON", DbConstans.KEY_TASK_GROUP, "=",
                         DbConstans.KEY_GROUP_ID);
 
-            SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-            queryBuilder.setTables(tables);
-            queryBuilder.setProjectionMap(getTasksProjectionMap());
-
-            return db.query(queryBuilder, projection, selection, selectionArgs, null, null,
+                queryBuilder.setTables(tables);
+                queryBuilder.setProjectionMap(getTasksProjectionMap());
+                return db.query(queryBuilder, projection, selection, selectionArgs, null, null,
                         sortOrder);
             case TASKS_ID:
                 return null;
             case GROUPS:
-                return null;
+                queryBuilder.setTables(DbConstans.TASK_GROUPS_TABLE);
+                queryBuilder.setProjectionMap(getTasksProjectionMap());
+                return db
+                        .query(queryBuilder, projection, selection, selectionArgs, null, null,
+                                sortOrder);
             case GROUPS_ID:
                 return null;
+            case MARKERS:
+                queryBuilder.setTables(DbConstans.MARKER_TABLE);
+                return db.query(queryBuilder, projection, selection, selectionArgs, null, null,
+                        sortOrder);
             default:
-            throw new IllegalArgumentException("No content provider uri match");
+                throw new IllegalArgumentException("No content provider uri match");
         }
     }
 
@@ -83,6 +93,8 @@ public class GameDataProvider extends ContentProvider {
                 return "vnd.android.cursor.dir/vnd.pl.gda.pg.tomrumpc.urbestgame.provider.group";
             case GROUPS_ID:
                 return "vnd.android.cursor.item/vnd.pl.gda.pg.tomrumpc.urbestgame.provider.group";
+            case MARKERS:
+                return "vnd.android.cursor.dir/vnd.pl.gda.pg.tomrumpc.urbestgame.provider.marker";
             default:
             throw new IllegalArgumentException("No content provider uri match");
         }

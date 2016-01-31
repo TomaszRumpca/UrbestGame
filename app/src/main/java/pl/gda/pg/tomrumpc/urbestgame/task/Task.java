@@ -2,9 +2,13 @@ package pl.gda.pg.tomrumpc.urbestgame.task;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
+
 import static pl.gda.pg.tomrumpc.urbestgame.task.Task.State.*;
 
-public class Task {
+public class Task implements Serializable{
+
+    private static final long serialVersionUID = 0L;
 
     public enum State {
         LOCKED(0),
