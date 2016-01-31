@@ -51,6 +51,7 @@ public class Drawer extends View implements onPositionChangedListener {
     public void onPositionChanged(Bundle extras) {
 
         List<String> tasks = extras.getStringArrayList("tasksBearingB");
+        screenCoordinates = new HashMap<>();
 
         for (String taskName : tasks) {
             double[] bearingB = extras.getDoubleArray(taskName + "bearingB");
