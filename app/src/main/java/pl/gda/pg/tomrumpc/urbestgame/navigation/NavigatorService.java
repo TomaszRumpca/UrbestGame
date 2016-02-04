@@ -20,7 +20,7 @@ import java.util.Map;
 public class NavigatorService extends Service implements SensorEventListener {
 
     public static final String NAVIGATION_SERVICE = "navigationService";
-    private static final float ALPHA = 0.65f;
+    private static final float ALPHA = 20.15f;
 
     SensorManager sManager;
     float[] mag, acc;
@@ -28,6 +28,7 @@ public class NavigatorService extends Service implements SensorEventListener {
 
     ArrayList<String> taskNames;
     Map<String, double[]> tasksECEF;
+
     double[] userPosition;
 
     @Override
@@ -38,12 +39,13 @@ public class NavigatorService extends Service implements SensorEventListener {
         Sensor sAccelerometr = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         Sensor sMagneticField = sManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-        sManager.registerListener(this, sMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
-        sManager.registerListener(this, sAccelerometr, SensorManager.SENSOR_DELAY_NORMAL);
+        sManager.registerListener(this, sMagneticField, SensorManager.SENSOR_DELAY_UI);
+        sManager.registerListener(this, sAccelerometr, SensorManager.SENSOR_DELAY_UI);
 
-        userPosition = new double[]{54.497378d, 18.502430d, 0f};
-
+        userPosition = new double[]{NavigationUtils.degreesToRad(54.497378d),
+                NavigationUtils.degreesToRad(18.502430d), 0.5d};
     }
+
 
     @Override
     public void onDestroy() {
@@ -61,9 +63,9 @@ public class NavigatorService extends Service implements SensorEventListener {
         taskNames = extras.getStringArrayList("tasks");
         for (String taskName : taskNames) {
             Task task = ((Task) extras.get(taskName));
-            tasksECEF.put(task.getTaskName(), NavigationUtils
-                    .geoCoordinatesToECEF(NavigationUtils.degreesToRad(task.getLatitude()),
-                            NavigationUtils.degreesToRad(task.getLongitude()), 0d));
+            double[] coordinates = new double[]{NavigationUtils.degreesToRad(task.getLatitude()),
+                    NavigationUtils.degreesToRad(task.getLongitude()), 0.5d};
+            tasksECEF.put(task.getTaskName(), coordinates);
         }
 
         return null;
@@ -83,12 +85,14 @@ public class NavigatorService extends Service implements SensorEventListener {
 
         switch (event.sensor.getType()) {
             case Sensor.TYPE_MAGNETIC_FIELD:
-                mag = lowPass(valuesArray.clone(), mag);
-                break;
+//                mag = lowPass(valuesArray.clone(), mag);
+                mag = valuesArray.clone();
+                  break;
             case Sensor.TYPE_GRAVITY:
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-                acc = lowPass(valuesArray.clone(), acc);
+//                acc = lowPass(valuesArray.clone(), acc);
+                acc = valuesArray.clone();
             default:
                 break;
         }
@@ -98,19 +102,33 @@ public class NavigatorService extends Service implements SensorEventListener {
             if (success) {
 
                 Bundle extras = new Bundle();
-                for (Map.Entry entry : tasksECEF.entrySet()) {
+                if(tasksECEF != null){
+                    for (Map.Entry entry : tasksECEF.entrySet()) {
+                        double[] taskCoordinates = (double[]) entry.getValue();
+                        double[] enu = NavigationUtils
+                                .getENU(userPosition[0],userPosition[1], userPosition[2],
+                                        taskCoordinates[0],taskCoordinates[1],taskCoordinates[2]);
+                        float[] przemEnu = PrzemNaviUtils.latlonToENU((float) userPosition[0],
+                                (float) userPosition[1], (float) userPosition[2],
+                                (float) taskCoordinates[0], (float) taskCoordinates[1],
+                                (float) taskCoordinates[2]);
+                                float[] przemB = PrzemNaviUtils.getNameiarB(przemEnu, rotFromBToM);
 
-                    double[] enu = NavigationUtils
-                            .getENU(NavigationUtils.degreesToRad(userPosition[0]),
-                                    NavigationUtils.degreesToRad(userPosition[1]), userPosition[2],
-                                    (double[]) entry.getValue());
+                        float przemX = -przemB[1] / przemB[2];
+                        float przemY = przemB[0] / przemB[2];
 
-                    double[] bearingB = NavigationUtils.fromMToB(enu, rotFromBToM);
-                    extras.putDoubleArray(entry.getKey() + "bearingB", bearingB);
+
+                        double[] bearingB = NavigationUtils.fromMToB(enu, rotFromBToM);
+                        float tomX =(float) (bearingB[1] / bearingB[2]);
+                        float tomY =(float) (bearingB[0] / bearingB[2]);
+
+
+
+                        extras.putDoubleArray(entry.getKey() + "bearingB", bearingB);
+                    }
+                    extras.putStringArrayList("tasksBearingB", taskNames);
+                    sendLocationBroadcast(extras);
                 }
-                extras.putStringArrayList("tasksBearingB",taskNames);
-                sendLocationBroadcast(extras);
-
             }
         }
     }
@@ -119,14 +137,14 @@ public class NavigatorService extends Service implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    protected float[] lowPass(float[] input, float[] output) {
-        if (output == null) {
-            return input;
+    protected float[] lowPass(float[] newValue, float[] previousValue) {
+        if (previousValue == null || Float.isNaN(previousValue[0])) {
+            return newValue;
         }
-
-        for (int i = 0; i < input.length; i++) {
-            output[i] = output[i] + ALPHA * (input[i] - output[i]);
+        float[] calculatedValue = new float[previousValue.length];
+        for (int i = 0; i < newValue.length; i++) {
+            calculatedValue[i] = previousValue[i] + ALPHA * (newValue[i] - previousValue[i]);
         }
-        return output;
+        return calculatedValue;
     }
 }

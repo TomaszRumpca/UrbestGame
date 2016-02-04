@@ -58,6 +58,12 @@ public class Navigator extends Activity implements ServiceConnection{
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(this);
+    }
+
+    @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
 
     }

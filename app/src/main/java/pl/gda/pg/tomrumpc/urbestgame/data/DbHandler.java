@@ -253,20 +253,25 @@ public class DbHandler {
                     + ") VALUES (";
             String queryEnd = ");";
 
-            String values1 = "'0', 'DESC10', '" + DbConstans.INVESTMENT_AREA + "', 'Warzywniak', '6','-1','null', '" + zaspa + "', '54.396575', '18.585299', '1', 'null', 'null'";
-            String values2 = "'0', 'DESC11', '" + DbConstans.SCULPTURES + "', 'Sztuka w przestrzeni', '5','-1','null', '" + zabianka + "', '54.420478', '18.57427', '1', 'null', 'null'";
-            String values3 = "'0', 'DESC12', '" + DbConstans.RIDDLE + "', 'Kładka', '4','-1','null', '" + zaspa + "', '54.394339', '18.601804', '0', 'null', 'null'";
-            String values4 = "'0', 'DESC13', '" + DbConstans.FOUNTAIN + "', 'Połamany Herbatnik', '4','-1','null', '" + zabianka + "', '54.420540', '18.575585', '0', 'null', 'null'";
-            String values5 = "'0', 'DESC14', '" + DbConstans.PLAYING_FIELD + "', 'Piłka w grze!', '10','-1','null', '" + zabianka + "', '54.420202', '18.583375', '0', 'null', 'null'";
-            String values6 = "'0', 'DESC15', '" + DbConstans.ERGO + "', 'Ergo Arena', '5','-1','null', '" + zabianka + "', '54.424478', '18.579850', '0', 'null', 'null'";
-            String values7 = "'0', 'DESC16', '" + DbConstans.LAKE + "', 'Jezioro', '5','-1','null', '" + zabianka + "', '54.416325', '18.573062', '0', 'null', 'null'";
-            String values8 = "'0', 'DESC17', '" + DbConstans.BLOCK + "', 'Blokowisko', '10','-1','null', '" + przymorze + "', '54.407531', '18.597417', '0', 'null', 'null'";
-            String values9 = "'0', 'DESC18', '" + DbConstans.BAKERY + "', 'Piekarnia Graczyk', '2','-1','null', '" + przymorze + "', '54.401828', '18.579293', '0', 'null', 'null'";
-            String values10 = "'0', 'DESC1', '" + DbConstans.CROSSWORD + "', 'Dywizjonu 303', '7','-1','null', '" + zaspa + "', '54.390293', '18.599415', '0', 'null', 'null'";
-            String values11 = "'0', 'DESC2', '" + DbConstans.OLDAIRPORT + "', 'Dziedzictwo dzielnicy', '3','-1','null', '" + zaspa + "', '54.399636', '18.606868', '0', 'null', 'null'";
-            String values12 = "'0', 'DESC3', '" + DbConstans.POPE + "', 'Papież Polak', '5','-1','null', '" + zaspa + "', '54.399196', '18.595927', '0', 'null', 'null'";
-            String values13 = "'0', 'DESC4', '" + DbConstans.FALOWIEC + "', 'Falowiec', '5','-1','null', '" + przymorze + "', '54.415966', '18.586301', '0', 'null', 'null'";
-            String values14 = "'0', 'DESC5', '" + DbConstans.BALTIC + "', 'Bałtyk', '6','-1','null', '" + przymorze + "', '54.409423', '18.575863', '0', 'null', 'null'";
+//            String values1 = "'0', 'DESC10', '" + DbConstans.INVESTMENT_AREA + "', 'Warzywniak', '6','-1','null', '" + zaspa + "', '54.396575', '18.585299', '1', 'null', 'null'";
+//            String values2 = "'0', 'DESC11', '" + DbConstans.SCULPTURES + "', 'Sztuka w przestrzeni', '5','-1','null', '" + zabianka + "', '54.420478', '18.57427', '1', 'null', 'null'";
+//            String values3 = "'0', 'DESC12', '" + DbConstans.RIDDLE + "', 'Kładka', '4','-1','null', '" + zaspa + "', '54.394339', '18.601804', '0', 'null', 'null'";
+//            String values4 = "'0', 'DESC13', '" + DbConstans.FOUNTAIN + "', 'Połamany Herbatnik', '4','-1','null', '" + zabianka + "', '54.420540', '18.575585', '0', 'null', 'null'";
+//            String values5 = "'0', 'DESC14', '" + DbConstans.PLAYING_FIELD + "', 'Piłka w grze!', '10','-1','null', '" + zabianka + "', '54.420202', '18.583375', '0', 'null', 'null'";
+//            String values6 = "'0', 'DESC15', '" + DbConstans.ERGO + "', 'Ergo Arena', '5','-1','null', '" + zabianka + "', '54.424478', '18.579850', '0', 'null', 'null'";
+//            String values7 = "'0', 'DESC16', '" + DbConstans.LAKE + "', 'Jezioro', '5','-1','null', '" + zabianka + "', '54.416325', '18.573062', '0', 'null', 'null'";
+//            String values8 = "'0', 'DESC17', '" + DbConstans.BLOCK + "', 'Blokowisko', '10','-1','null', '" + przymorze + "', '54.407531', '18.597417', '0', 'null', 'null'";
+//            String values9 = "'0', 'DESC18', '" + DbConstans.BAKERY + "', 'Piekarnia Graczyk', '2','-1','null', '" + przymorze + "', '54.401828', '18.579293', '0', 'null', 'null'";
+//            String values10 = "'0', 'DESC1', '" + DbConstans.CROSSWORD + "', 'Dywizjonu 303', '7','-1','null', '" + zaspa + "', '54.390293', '18.599415', '0', 'null', 'null'";
+//            String values11 = "'0', 'DESC2', '" + DbConstans.OLDAIRPORT + "', 'Dziedzictwo dzielnicy', '3','-1','null', '" + zaspa + "', '54.399636', '18.606868', '0', 'null', 'null'";
+//            String values12 = "'0', 'DESC3', '" + DbConstans.POPE + "', 'Papież Polak', '5','-1','null', '" + zaspa + "', '54.399196', '18.595927', '0', 'null', 'null'";
+//            String values13 = "'0', 'DESC4', '" + DbConstans.FALOWIEC + "', 'Falowiec', '5','-1','null', '" + przymorze + "', '54.415966', '18.586301', '0', 'null', 'null'";
+//            String values14 = "'0', 'DESC5', '" + DbConstans.BALTIC + "', 'Bałtyk', '6','-1','null', '" + przymorze + "', '54.409423', '18.575863', '0', 'null', 'null'";
+
+            String values11 = "'0', 'DESC2', '1', 'POLNOC', '3','-1','null', '" + zaspa + "', '54.54000', '18.502430', '0', 'null', 'null'";
+            String values12 = "'0', 'DESC3', '2', 'POLUDNIE', '5','-1','null', '" + zaspa + "', '54.42000', '18.502430', '0', 'null', 'null'";
+            String values13 = "'0', 'DESC4', '3', 'WSCHOD', '5','-1','null', '" + przymorze + "', '54.497378', '18.55000', '0', 'null', 'null'";
+            String values14 = "'0', 'DESC5', '4', 'ZACHOD', '6','-1','null', '" + przymorze + "', '54.497378', '18.43000', '0', 'null', 'null'";
 
             //                TASK_ID,      TASK_NAME,    MAX_Points, AchivedPoints, used prompts, group, lat', 'lng, isActive, dateofActivation, dateOfcompletion
             //															init -1
@@ -279,16 +284,16 @@ public class DbHandler {
             String gquery2 = qstart + gvalue2 + queryEnd;
             String gquery3 = qstart + gvalue3 + queryEnd;
 
-            String query1 = queryStart + values1 + queryEnd;
-            String query2 = queryStart + values2 + queryEnd;
-            String query3 = queryStart + values3 + queryEnd;
-            String query4 = queryStart + values4 + queryEnd;
-            String query5 = queryStart + values5 + queryEnd;
-            String query6 = queryStart + values6 + queryEnd;
-            String query7 = queryStart + values7 + queryEnd;
-            String query8 = queryStart + values8 + queryEnd;
-            String query9 = queryStart + values9 + queryEnd;
-            String query10 = queryStart + values10 + queryEnd;
+//            String query1 = queryStart + values1 + queryEnd;
+//            String query2 = queryStart + values2 + queryEnd;
+//            String query3 = queryStart + values3 + queryEnd;
+//            String query4 = queryStart + values4 + queryEnd;
+//            String query5 = queryStart + values5 + queryEnd;
+//            String query6 = queryStart + values6 + queryEnd;
+//            String query7 = queryStart + values7 + queryEnd;
+//            String query8 = queryStart + values8 + queryEnd;
+//            String query9 = queryStart + values9 + queryEnd;
+//            String query10 = queryStart + values10 + queryEnd;
             String query11 = queryStart + values11 + queryEnd;
             String query12 = queryStart + values12 + queryEnd;
             String query13 = queryStart + values13 + queryEnd;
@@ -302,16 +307,16 @@ public class DbHandler {
 
             db.execSQL(qaInsert1);
 
-            db.execSQL(query1);
-            db.execSQL(query2);
-            db.execSQL(query3);
-            db.execSQL(query4);
-            db.execSQL(query5);
-            db.execSQL(query6);
-            db.execSQL(query7);
-            db.execSQL(query8);
-            db.execSQL(query9);
-            db.execSQL(query10);
+//            db.execSQL(query1);
+//            db.execSQL(query2);
+//            db.execSQL(query3);
+//            db.execSQL(query4);
+//            db.execSQL(query5);
+//            db.execSQL(query6);
+//            db.execSQL(query7);
+//            db.execSQL(query8);
+//            db.execSQL(query9);
+//            db.execSQL(query10);
             db.execSQL(query11);
             db.execSQL(query12);
             db.execSQL(query13);
