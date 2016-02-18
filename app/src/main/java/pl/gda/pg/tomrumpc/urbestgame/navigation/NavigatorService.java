@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import pl.gda.pg.tomrumpc.urbestgame.task.Task;
 
 import java.util.ArrayList;
@@ -31,6 +32,11 @@ public class NavigatorService extends Service implements SensorEventListener {
 
     double[] userPosition;
 
+
+    double[] oldUserPosition;
+    float[] enu;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -44,6 +50,13 @@ public class NavigatorService extends Service implements SensorEventListener {
 
         userPosition = new double[]{NavigationUtils.degreesToRad(54.497378d),
                 NavigationUtils.degreesToRad(18.502430d), 0.5d};
+
+        oldUserPosition = new double[]{54.497378d, 18.502430d, 0f};
+        enu = NavigationUtils.oldGetENU((float)NavigationUtils.degreesToRad(oldUserPosition[0]),
+                (float)NavigationUtils.degreesToRad(oldUserPosition[1]), (float)oldUserPosition[2],
+                NavigationUtils.oldLatLonToECEF((float) NavigationUtils.degreesToRad(54.507378d),
+                        (float) NavigationUtils.degreesToRad(18.502430d), 0f));
+
     }
 
 
@@ -70,7 +83,6 @@ public class NavigatorService extends Service implements SensorEventListener {
 
         return null;
     }
-
 
     private void sendLocationBroadcast(Bundle bundle) {
         Intent intent = new Intent(NAVIGATION_SERVICE);
@@ -106,23 +118,11 @@ public class NavigatorService extends Service implements SensorEventListener {
                     for (Map.Entry entry : tasksECEF.entrySet()) {
                         double[] taskCoordinates = (double[]) entry.getValue();
                         double[] enu = NavigationUtils
-                                .getENU(userPosition[0],userPosition[1], userPosition[2],
-                                        taskCoordinates[0],taskCoordinates[1],taskCoordinates[2]);
-                        float[] przemEnu = PrzemNaviUtils.latlonToENU((float) userPosition[0],
-                                (float) userPosition[1], (float) userPosition[2],
-                                (float) taskCoordinates[0], (float) taskCoordinates[1],
-                                (float) taskCoordinates[2]);
-                                float[] przemB = PrzemNaviUtils.getNameiarB(przemEnu, rotFromBToM);
-
-                        float przemX = -przemB[1] / przemB[2];
-                        float przemY = przemB[0] / przemB[2];
+                                .getENU(userPosition[0], userPosition[1], userPosition[2],
+                                        taskCoordinates[0], taskCoordinates[1], taskCoordinates[2]);
 
 
                         double[] bearingB = NavigationUtils.fromMToB(enu, rotFromBToM);
-                        float tomX =(float) (bearingB[1] / bearingB[2]);
-                        float tomY =(float) (bearingB[0] / bearingB[2]);
-
-
 
                         extras.putDoubleArray(entry.getKey() + "bearingB", bearingB);
                     }
@@ -131,6 +131,8 @@ public class NavigatorService extends Service implements SensorEventListener {
                 }
             }
         }
+
+
     }
 
     @Override

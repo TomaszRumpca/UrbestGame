@@ -31,10 +31,10 @@ public class DbFacade {
         contentResolver = context.getContentResolver();
     }
 
-    public List<String> getTaskGroupNames(){
+    public List<String> getTaskGroupNames() {
         List<Group> groups = getTaskGroups();
         List<String> groupNames = new ArrayList<>(groups.size());
-        for(Group group : groups){
+        for (Group group : groups) {
             groupNames.add(group.getGroupName());
         }
         return groupNames;
@@ -45,8 +45,8 @@ public class DbFacade {
         final String sortOrder = DbConstans.KEY_GROUP_ID + " ASC";
 
         Uri uri = Uri.parse(CONTENT_URI_PREFIX + "/groups");
-        Cursor cursor = contentResolver
-                .query(uri, getDefaultGroupProjection(), null, null, sortOrder);
+        Cursor cursor =
+                contentResolver.query(uri, getDefaultGroupProjection(), null, null, sortOrder);
 
         final List<Group> groups = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
@@ -62,8 +62,8 @@ public class DbFacade {
     public Integer getCompletedTasksCount(String group) {
 
         int completed = 0;
-        for(Task task : getTasks(group)){
-            if(Task.State.DONE.equals(task.getState())){
+        for (Task task : getTasks(group)) {
+            if (Task.State.DONE.equals(task.getState())) {
                 completed++;
             }
         }
@@ -117,7 +117,7 @@ public class DbFacade {
     }
 
 
-    private String[] getDefaultTaskProjection(){
+    private String[] getDefaultTaskProjection() {
         //@formatter:off
         return new String[]{
                 DbConstans.KEY_TASK_ID,
@@ -138,7 +138,7 @@ public class DbFacade {
         //@formatter:on
     }
 
-    private String[] getDefaultGroupProjection(){
+    private String[] getDefaultGroupProjection() {
         //@formatter:off
         return new String[]{
                 DbConstans.KEY_GROUP_NAME,
@@ -147,37 +147,29 @@ public class DbFacade {
         //@formatter:on
     }
 
-    private Task getTaskFromCursor(Cursor cursor){
-        return Task.builder()
-                .taskId(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_TASK_ID)))
+    private Task getTaskFromCursor(Cursor cursor) {
+        return Task.builder().taskId(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_TASK_ID)))
                 .taskName(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_TASK)))
                 .maxPoints(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_MAX_POINTS)))
-                .achivedPoints(cursor.getInt(
-                        cursor.getColumnIndex(DbConstans.KEY_ACHIEVED_POINTS))).usedPrompts(
-                        cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_USED_PROMPTS)))
+                .achivedPoints(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_ACHIEVED_POINTS)))
+                .usedPrompts(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_USED_PROMPTS)))
                 .taskType(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_TASK_TYPE)))
                 .latitude(cursor.getDouble(cursor.getColumnIndex(DbConstans.KEY_LATITUDE)))
-                .longitude(
-                        cursor.getDouble(cursor.getColumnIndex(DbConstans.KEY_LONGITUDE)))
-                .state(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_STATE)))
-                .dateOfActivation(cursor.getString(
-                        cursor.getColumnIndex(DbConstans.KEY_DATE_OF_ACTIVATION)))
-                .dateOfCompletion(cursor.getString(
-                        cursor.getColumnIndex(DbConstans.KEY_DATE_OF_COMPLETION)))
+                .longitude(cursor.getDouble(cursor.getColumnIndex(DbConstans.KEY_LONGITUDE)))
+                .state(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_STATE))).dateOfActivation(
+                        cursor.getString(cursor.getColumnIndex(DbConstans.KEY_DATE_OF_ACTIVATION)))
+                .dateOfCompletion(
+                        cursor.getString(cursor.getColumnIndex(DbConstans.KEY_DATE_OF_COMPLETION)))
                 .groupId(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_GROUP_ID)))
-                .groupName(
-                        cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_NAME)))
-                .color(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_COLOR)))
-                .build();
+                .groupName(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_NAME)))
+                .color(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_COLOR))).build();
     }
 
-    private Group getGroupFromCursor(Cursor cursor){
+    private Group getGroupFromCursor(Cursor cursor) {
         return Group.builder()
                 .groupId(cursor.getInt(cursor.getColumnIndex(DbConstans.KEY_GROUP_ID)))
-                .groupName(
-                        cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_NAME)))
-                .color(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_COLOR)))
-                .build();
+                .groupName(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_NAME)))
+                .color(cursor.getString(cursor.getColumnIndex(DbConstans.KEY_GROUP_COLOR))).build();
     }
 
     public boolean submitAnswer(String taskName, String answer) {
@@ -202,7 +194,7 @@ public class DbFacade {
         Cursor cursor = db.getAnswer(taskName);
 
         String answer = null;
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             answer = cursor.getString(0);
         }
 
@@ -220,10 +212,10 @@ public class DbFacade {
 
         int submissionStatus = -1;
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             submissionStatus = cursor.getInt(0);
         }
-        if(submissionStatus == DbConstans.SUBMISSION_STATUS_NOT_SUBMITTED){
+        if (submissionStatus == DbConstans.SUBMISSION_STATUS_NOT_SUBMITTED) {
             updatedRows = db.saveAnswer(taskName, answer);
         }
 
@@ -231,4 +223,24 @@ public class DbFacade {
 
         return updatedRows == 1L ? true : false;
     }
+
+    public void updateDatabase(List<Task> tasks) {
+
+        db.open();
+        db.begin();
+        db.clearDatabase();
+        for (Task task : tasks) {
+            db.saveTask(task);
+        }
+        db.end();
+        db.close();
+    }
+
+    public void updateTask(Task task) {
+
+        db.open();
+        db.updateTask(task);
+        db.close();
+    }
+
 }

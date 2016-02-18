@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import pl.gda.pg.tomrumpc.urbestgame.R;
+import pl.gda.pg.tomrumpc.urbestgame.data.SyncService;
+import pl.gda.pg.tomrumpc.urbestgame.data.WsAdapter;
 
 public class LoginPage extends Activity {
 
@@ -19,6 +21,7 @@ public class LoginPage extends Activity {
 
     // The authority for the sync adapter's content provider
     public static final String AUTHORITY = "pl.gda.pg.tomrumpc.urbestgame.provider";
+//    public static final String AUTHORITY = "android.content.SyncAdapter";
     // An account type, in the form of a domain name
     public static String ACCOUNT_TYPE;
 
@@ -35,6 +38,7 @@ public class LoginPage extends Activity {
         ACCOUNT_TYPE = getResources().getString(R.string.urbest_account);
         login = (EditText) findViewById(R.id.login);
         password = (EditText) findViewById(R.id.password);
+        startService(new Intent(this, SyncService.class));
     }
 
     public void onLogin(View v) {
@@ -42,40 +46,46 @@ public class LoginPage extends Activity {
         String user = login.getText().toString();
         String pass = password.getText().toString();
 
-        // Create the account type and default account
-        Account newAccount = new Account(user, ACCOUNT_TYPE);
-        // Get an instance of the Android account manager
-        AccountManager accountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
-        /*
-         * Add the account and account type, no password or user data
-         * If successful, return the Account object, otherwise report an error.
-         */
-        if (accountManager.addAccountExplicitly(newAccount, pass, Bundle.EMPTY)) {
-            /*
-             * If you don't set android:syncable="true" in
-             * in your <provider> element in the manifest,
-             * then call context.setIsSyncable(account, AUTHORITY, 1)
-             * here.
-             */
-            Bundle settingsBundle = new Bundle();
-            settingsBundle.putBoolean(
-                    ContentResolver.SYNC_EXTRAS_MANUAL, true);
-            settingsBundle.putBoolean(
-                    ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+//        // Create the account type and default account
+//        Account newAccount = new Account(user, ACCOUNT_TYPE);
+//        // Get an instance of the Android account manager
+//        AccountManager accountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
+//        /*
+//         * Add the account and account type, no password or user data
+//         * If successful, return the Account object, otherwise report an error.
+//         */
+//        Bundle settingsBundle = new Bundle();
+//        settingsBundle.putBoolean(
+//                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+//        settingsBundle.putBoolean(
+//                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+//
+//        Log.d("URBEST", "Sending sync request...");
+//        ContentResolver contentResolver = context.getContentResolver();
+//        contentResolver.requestSync(newAccount, AUTHORITY, settingsBundle);
+//
+//        if (accountManager.addAccountExplicitly(newAccount, pass, Bundle.EMPTY)) {
+//            /*
+//             * If you don't set android:syncable="true" in
+//             * in your <provider> element in the manifest,
+//             * then call context.setIsSyncable(account, AUTHORITY, 1)
+//             * here.
+//             */
+//
+//            startActivity(new Intent(this, Map.class));
+//        } else {
+//            /*
+//             * The account exists or some other error occurred. Log this, report it,
+//             * or handle it internally.
+//             */
+//            Log.d("URBEST", "Running map activity without syncing");
+//            startActivity(new Intent(this, Map.class));
+//        }
 
-            Log.d("URBEST", "Sending sync request...");
-            ContentResolver contentResolver = context.getContentResolver();
-            contentResolver.requestSync(newAccount, AUTHORITY, settingsBundle);
-            startActivity(new Intent(this, Map.class));
-        } else {
-            /*
-             * The account exists or some other error occurred. Log this, report it,
-             * or handle it internally.
-             */
-            Log.d("URBEST", "Running map activity without syncing");
-            startActivity(new Intent(this, Map.class));
-        }
+        WsAdapter adapter = new WsAdapter(this);
+        adapter.sendGetRequest();
 
+        startActivity(new Intent(this, Map.class));
 
     }
 

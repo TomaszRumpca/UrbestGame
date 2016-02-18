@@ -19,5 +19,4 @@ public class DataReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         receiver.onPositionChanged(intent.getExtras());
     }
-
 }

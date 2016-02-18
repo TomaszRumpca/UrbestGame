@@ -20,10 +20,13 @@ public class Drawer extends View implements onPositionChangedListener {
     }
 
     Paint p = new Paint();
+    Paint textPaint = new Paint();
 
     public Drawer(Context context, AttributeSet attrs) {
         super(context, attrs);
         p.setARGB(255, 255, 0, 0);
+        textPaint.setARGB(255, 255, 0, 0);
+        textPaint.setTextSize(35);
     }
 
     Map<String, Map<String, Float>> screenCoordinates;
@@ -37,20 +40,21 @@ public class Drawer extends View implements onPositionChangedListener {
         int sx = canvas.getWidth();
         int sy = canvas.getHeight();
 
-        if(screenCoordinates != null){
+        if (screenCoordinates != null) {
             for (Map.Entry entry : screenCoordinates.entrySet()) {
                 Map<String, Float> coordinates = (Map<String, Float>) entry.getValue();
                 Float x = coordinates.get("x");
                 Float y = coordinates.get("y");
                 Float z = coordinates.get("z");
-                if (x != null && y != null && z!= null && z > 0) {
+                if (x != null && y != null && z != null && z < 0) {
                     float xOnScreen = (-x * sx + sx / 2);
-                    float yOnScreen =(y * sy + sy / 2);
-                    canvas.drawCircle( xOnScreen, yOnScreen, 30f, p);
-                    canvas.drawText((String) entry.getKey(),xOnScreen+30f,yOnScreen+30f,p);
+                    float yOnScreen = (y * sy + sy / 2);
+                    canvas.drawCircle(xOnScreen, yOnScreen, 30f, p);
+                    canvas.drawText((String) entry.getKey(), xOnScreen + 30f, yOnScreen + 30f, textPaint);
                 }
             }
         }
+
     }
 
     @Override
@@ -62,11 +66,12 @@ public class Drawer extends View implements onPositionChangedListener {
         for (String taskName : tasks) {
             double[] bearingB = extras.getDoubleArray(taskName + "bearingB");
             Map<String, Float> coordinates = new HashMap<>();
-            coordinates.put("x", (float) (bearingB[1] / bearingB[2]));
-            coordinates.put("y", (float) (bearingB[0] / bearingB[2]));
-            coordinates.put("z", (float) ( bearingB[2]));
+            coordinates.put("x", (float) (bearingB[0] / bearingB[2]));
+            coordinates.put("y", (float) (bearingB[1] / bearingB[2]));
+            coordinates.put("z", (float) (bearingB[2]));
             screenCoordinates.put(taskName, coordinates);
         }
         invalidate();
     }
+
 }

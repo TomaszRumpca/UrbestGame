@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
 import com.google.common.base.Joiner;
+import pl.gda.pg.tomrumpc.urbestgame.task.Task;
 
 import java.util.Map;
 
@@ -37,6 +38,28 @@ public class DbHandler {
 
     public void close() {
         db.close();
+    }
+
+    public void clearDatabase(){
+        db.delete(DbConstans.TASKS_TABLE, "1=1", null);
+    }
+
+    public long saveTask(Task task){
+        ContentValues cv = new ContentValues();
+        cv.put(DbConstans.KEY_TASK_ID,String.valueOf(task.getTaskId()));
+        cv.put(DbConstans.KEY_TASK, task.getTaskName());
+        cv.put(DbConstans.KEY_TASK_DESCRIPTION, task.getTaskDescription());
+        cv.put(DbConstans.KEY_TASK_TYPE,0);
+        cv.put(DbConstans.KEY_ACHIEVED_POINTS,0);
+        cv.put(DbConstans.KEY_DATE_OF_COMPLETION,"");
+        cv.put(DbConstans.KEY_DATE_OF_ACTIVATION,"");
+        cv.put(DbConstans.KEY_LATITUDE,task.getLatitude());
+        cv.put(DbConstans.KEY_LONGITUDE,task.getLongitude());
+        cv.put(DbConstans.KEY_MAX_POINTS, task.getMaxPoints());
+        cv.put(DbConstans.KEY_TASK_GROUP, 1);
+        cv.put(DbConstans.KEY_STATE, 1);
+        cv.put(DbConstans.KEY_USED_PROMPTS, 0);
+        return db.insertOrThrow(DbConstans.TASKS_TABLE,null,cv);
     }
 
 //    public void deleteAll() {
@@ -217,8 +240,39 @@ public class DbHandler {
     public Cursor getSubmissionStatus(String taskName) {
         String[] projection = {DbConstans.KEY_SUBMISSION_STATUS};
         String[] selectionArgs = {taskName};
-        return db.query(DbConstans.QA_TABLE, projection, taskIdSelection, selectionArgs,
-                null, null, null);
+        return db.query(DbConstans.QA_TABLE, projection, taskIdSelection, selectionArgs, null, null,
+                null);
+    }
+
+    public void begin() {
+        db.beginTransaction();
+    }
+
+    public void end() {
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public long updateTask(Task task) {
+        String where = DbConstans.KEY_TASK_ID + " = '?'";
+        String[] args = new String[]{task.getTaskName()};
+
+        ContentValues cv = new ContentValues();
+        cv.put(DbConstans.KEY_TASK_ID,String.valueOf(task.getTaskId()));
+        cv.put(DbConstans.KEY_TASK, task.getTaskName());
+        cv.put(DbConstans.KEY_TASK_DESCRIPTION, task.getTaskDescription());
+        cv.put(DbConstans.KEY_TASK_TYPE,0);
+        cv.put(DbConstans.KEY_ACHIEVED_POINTS,0);
+        cv.put(DbConstans.KEY_DATE_OF_COMPLETION,"");
+        cv.put(DbConstans.KEY_DATE_OF_ACTIVATION,"");
+        cv.put(DbConstans.KEY_LATITUDE,task.getLatitude());
+        cv.put(DbConstans.KEY_LONGITUDE,task.getLongitude());
+        cv.put(DbConstans.KEY_MAX_POINTS, task.getMaxPoints());
+        cv.put(DbConstans.KEY_TASK_GROUP, 1);
+        cv.put(DbConstans.KEY_STATE, 1);
+        cv.put(DbConstans.KEY_USED_PROMPTS, 0);
+
+        return db.update(DbConstans.TASKS_TABLE, cv, where, args);
     }
 
     public static class DatabaseHelper extends SQLiteOpenHelper {
@@ -268,7 +322,7 @@ public class DbHandler {
 //            String values13 = "'0', 'DESC4', '" + DbConstans.FALOWIEC + "', 'Falowiec', '5','-1','null', '" + przymorze + "', '54.415966', '18.586301', '0', 'null', 'null'";
 //            String values14 = "'0', 'DESC5', '" + DbConstans.BALTIC + "', 'Bałtyk', '6','-1','null', '" + przymorze + "', '54.409423', '18.575863', '0', 'null', 'null'";
 
-            String values11 = "'0', 'DESC2', '1', 'POLNOC', '3','-1','null', '" + zaspa + "', '54.54000', '18.502430', '0', 'null', 'null'";
+            String values11 = "'0', 'DESC2', '1', 'POLNOC', '3','-1','null', '" + zaspa + "', '54.507378', '18.502430', '0', 'null', 'null'";
             String values12 = "'0', 'DESC3', '2', 'POLUDNIE', '5','-1','null', '" + zaspa + "', '54.42000', '18.502430', '0', 'null', 'null'";
             String values13 = "'0', 'DESC4', '3', 'WSCHOD', '5','-1','null', '" + przymorze + "', '54.497378', '18.55000', '0', 'null', 'null'";
             String values14 = "'0', 'DESC5', '4', 'ZACHOD', '6','-1','null', '" + przymorze + "', '54.497378', '18.43000', '0', 'null', 'null'";
