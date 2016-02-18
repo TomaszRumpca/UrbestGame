@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 import static pl.gda.pg.tomrumpc.urbestgame.task.Task.State.*;
 
-public class Task implements Serializable{
+public class Task implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
@@ -75,13 +75,17 @@ public class Task implements Serializable{
         color = builder.color;
     }
 
-    public int getTaskId() { return taskId; }
+    public int getTaskId() {
+        return taskId;
+    }
 
     public String getTaskName() {
         return taskName;
     }
 
-    public String getTaskDescription() { return taskDescription; }
+    public String getTaskDescription() {
+        return taskDescription;
+    }
 
     public int getMaxPoints() {
         return maxPoints;

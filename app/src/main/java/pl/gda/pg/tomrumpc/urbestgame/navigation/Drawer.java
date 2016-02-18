@@ -50,7 +50,8 @@ public class Drawer extends View implements onPositionChangedListener {
                     float xOnScreen = (-x * sx + sx / 2);
                     float yOnScreen = (y * sy + sy / 2);
                     canvas.drawCircle(xOnScreen, yOnScreen, 30f, p);
-                    canvas.drawText((String) entry.getKey(), xOnScreen + 30f, yOnScreen + 30f, textPaint);
+                    canvas.drawText((String) entry.getKey(), xOnScreen + 30f, yOnScreen + 30f,
+                            textPaint);
                 }
             }
         }

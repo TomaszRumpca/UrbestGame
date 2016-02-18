@@ -125,7 +125,7 @@ public class TasksViewer extends AbstractUrbestActivity implements OnItemClickLi
 
         if (task != null && task.isActive()) {
             Class clazz;
-            switch (task.getTaskType()){
+            switch (task.getTaskType()) {
                 case QA:
                     clazz = QATask.class;
                     break;
@@ -137,7 +137,8 @@ public class TasksViewer extends AbstractUrbestActivity implements OnItemClickLi
             bundle.putString(getResources().getString(R.string.task_title), title);
             bundle.putString(getResources().getString(R.string.task_points),
                     String.valueOf(task.getMaxPoints()));
-            bundle.putString(getResources().getString(R.string.task_description), task.getTaskDescription());
+            bundle.putString(getResources().getString(R.string.task_description),
+                    task.getTaskDescription());
             bundle.putString(getResources().getString(R.string.task_abbr), "xxx");
             intent.putExtras(bundle);
             startActivity(intent);

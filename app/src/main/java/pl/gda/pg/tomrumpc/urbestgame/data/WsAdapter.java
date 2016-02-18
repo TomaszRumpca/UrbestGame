@@ -26,13 +26,13 @@ public class WsAdapter implements Response.Listener<JSONArray>, Response.ErrorLi
     RequestQueue requestQueue;
     DbFacade db;
 
-    public WsAdapter(Context context){
+    public WsAdapter(Context context) {
         this.requestQueue = Volley.newRequestQueue(context);
 
-        this.db     = new DbFacade(context);
+        this.db = new DbFacade(context);
     }
 
-    public void sendGetRequest(){
+    public void sendGetRequest() {
 
         JsonArrayRequest jsonArrayRequest =
                 new JsonArrayRequest(Request.Method.GET, url, null, this, this);
@@ -53,18 +53,12 @@ public class WsAdapter implements Response.Listener<JSONArray>, Response.ErrorLi
         for (int i = 0; i < response.length(); i++) {
             try {
                 JSONObject jsonObj = (JSONObject) response.get(i);
-                Task task = Task.builder()
-                        .taskId(jsonObj.getInt("id"))
+                Task task = Task.builder().taskId(jsonObj.getInt("id"))
                         .taskName(jsonObj.getString("taskName"))
-                        .taskDescription(jsonObj.getString("taskDescription"))
-                        .achivedPoints(0)
-                        .maxPoints(jsonObj.getInt("maxPoints"))
-                        .usedPrompts(0)
-                        .dateOfActivation("")
+                        .taskDescription(jsonObj.getString("taskDescription")).achivedPoints(0)
+                        .maxPoints(jsonObj.getInt("maxPoints")).usedPrompts(0).dateOfActivation("")
                         .latitude(jsonObj.getDouble("latitude"))
-                        .longitude(jsonObj.getDouble("longitude"))
-                        .build()
-                        ;
+                        .longitude(jsonObj.getDouble("longitude")).build();
                 tasks.add(task);
             } catch (JSONException e) {
                 e.printStackTrace();

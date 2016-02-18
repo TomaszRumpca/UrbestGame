@@ -19,7 +19,7 @@ import pl.gda.pg.tomrumpc.urbestgame.task.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Navigator extends Activity implements ServiceConnection{
+public class Navigator extends Activity implements ServiceConnection {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +43,12 @@ public class Navigator extends Activity implements ServiceConnection{
         List<Task> tasks = db.getTasks(Constans.DEFAULT_TASK_GROUP_NAME);
         ArrayList<String> taskNames = new ArrayList<>(tasks.size());
         Bundle extras = new Bundle();
-        for(Task task : tasks){
+        for (Task task : tasks) {
             String taskName = task.getTaskName();
             extras.putSerializable(taskName, task);
             taskNames.add(taskName);
         }
-        extras.putStringArrayList("tasks",taskNames);
+        extras.putStringArrayList("tasks", taskNames);
 
         Intent service = new Intent(this, NavigatorService.class);
         service.putExtras(extras);

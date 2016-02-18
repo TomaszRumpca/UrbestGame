@@ -52,10 +52,11 @@ public class NavigatorService extends Service implements SensorEventListener {
                 NavigationUtils.degreesToRad(18.502430d), 0.5d};
 
         oldUserPosition = new double[]{54.497378d, 18.502430d, 0f};
-        enu = NavigationUtils.oldGetENU((float)NavigationUtils.degreesToRad(oldUserPosition[0]),
-                (float)NavigationUtils.degreesToRad(oldUserPosition[1]), (float)oldUserPosition[2],
-                NavigationUtils.oldLatLonToECEF((float) NavigationUtils.degreesToRad(54.507378d),
-                        (float) NavigationUtils.degreesToRad(18.502430d), 0f));
+        enu = NavigationUtils.oldGetENU((float) NavigationUtils.degreesToRad(oldUserPosition[0]),
+                (float) NavigationUtils.degreesToRad(oldUserPosition[1]),
+                (float) oldUserPosition[2], NavigationUtils
+                        .oldLatLonToECEF((float) NavigationUtils.degreesToRad(54.507378d),
+                                (float) NavigationUtils.degreesToRad(18.502430d), 0f));
 
     }
 
@@ -97,13 +98,13 @@ public class NavigatorService extends Service implements SensorEventListener {
 
         switch (event.sensor.getType()) {
             case Sensor.TYPE_MAGNETIC_FIELD:
-//                mag = lowPass(valuesArray.clone(), mag);
+                //                mag = lowPass(valuesArray.clone(), mag);
                 mag = valuesArray.clone();
-                  break;
+                break;
             case Sensor.TYPE_GRAVITY:
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-//                acc = lowPass(valuesArray.clone(), acc);
+                //                acc = lowPass(valuesArray.clone(), acc);
                 acc = valuesArray.clone();
             default:
                 break;
@@ -114,7 +115,7 @@ public class NavigatorService extends Service implements SensorEventListener {
             if (success) {
 
                 Bundle extras = new Bundle();
-                if(tasksECEF != null){
+                if (tasksECEF != null) {
                     for (Map.Entry entry : tasksECEF.entrySet()) {
                         double[] taskCoordinates = (double[]) entry.getValue();
                         double[] enu = NavigationUtils

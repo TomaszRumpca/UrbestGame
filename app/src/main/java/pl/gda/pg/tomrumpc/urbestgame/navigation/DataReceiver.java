@@ -11,7 +11,7 @@ public class DataReceiver extends BroadcastReceiver {
 
     onPositionChangedListener receiver;
 
-    public DataReceiver(onPositionChangedListener receiver){
+    public DataReceiver(onPositionChangedListener receiver) {
         this.receiver = receiver;
     }
 

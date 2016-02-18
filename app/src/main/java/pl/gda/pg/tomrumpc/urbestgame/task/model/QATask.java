@@ -47,7 +47,7 @@ public class QATask extends AppCompatActivity {
         saveButton.setClickable(isActive);
 
         String currentAnswer = db.getAnswer(taskName);
-        if(currentAnswer != null){
+        if (currentAnswer != null) {
             answerField.setText(currentAnswer);
         }
     }
@@ -58,11 +58,11 @@ public class QATask extends AppCompatActivity {
         super.onPause();
     }
 
-    public void onSaveClick(View view){
+    public void onSaveClick(View view) {
         String answer = answerField.getText().toString();
         answerField.setClickable(false);
         saveButton.setClickable(false);
-        db.submitAnswer(taskName,answer);
+        db.submitAnswer(taskName, answer);
         onBackPressed();
     }
 

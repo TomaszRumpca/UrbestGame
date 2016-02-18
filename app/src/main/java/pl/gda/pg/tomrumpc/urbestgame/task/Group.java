@@ -37,23 +37,24 @@ public class Group {
         private String groupName;
         private String color;
 
-        private Builder() { }
+        private Builder() {
+        }
 
         public Group build() {
             return new Group(this);
         }
 
-        public Builder groupId (int groupId){
+        public Builder groupId(int groupId) {
             this.groupId = groupId;
             return this;
         }
 
-        public Builder groupName (String groupName){
+        public Builder groupName(String groupName) {
             this.groupName = groupName;
             return this;
         }
 
-        public Builder color (String color){
+        public Builder color(String color) {
             this.color = color;
             return this;
         }

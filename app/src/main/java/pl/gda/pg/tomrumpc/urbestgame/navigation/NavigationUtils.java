@@ -190,7 +190,6 @@ public class NavigationUtils {
     public static final float OLD_EARTH_RADIUS = 6378137;
 
 
-
     public static float[] oldFromBToM(float[] B, float[] rotFromBToM) {
         float[] M = new float[3];
         M[0] = B[0] * rotFromBToM[0] +
@@ -204,7 +203,6 @@ public class NavigationUtils {
                 B[2] * rotFromBToM[2 + 6];
         return M;
     }
-
 
 
     public static float[] oldFromMToB(float[] M, float[] rotFromBToM) {
@@ -232,34 +230,32 @@ public class NavigationUtils {
     }
 
     //namiar na objects ze wspolrzednych geograficznych
-       public static float[] oldGetENU(float lat, float lon, float h, float[] objectEcef) {
-    float[] userEcef = oldLatLonToECEF(lat, lon, h);
-    float[] ecef = new float[3];
-    ecef[0]=userEcef[0]-objectEcef[0];
-    ecef[1]=userEcef[1]-objectEcef[1];
-    ecef[2]=userEcef[2]-objectEcef[2];
-    double[] matrix = new double[9];
-    //row 1
-    matrix[0]=-Math.sin(lon);
-    matrix[1]=Math.cos(lon);
-    matrix[2]=0;
-    //row 2
-    matrix[3]=-Math.cos(lon)*Math.sin(lat);
-    matrix[4]=-Math.sin(lat)*Math.sin(lon);
-    matrix[5]=Math.cos(lat);
-    //row 3
-    matrix[6]=Math.cos(lat)*Math.cos(lon);
-    matrix[7]=Math.sin(lon)*Math.cos(lat);
-    matrix[8]=Math.sin(lat);
+    public static float[] oldGetENU(float lat, float lon, float h, float[] objectEcef) {
+        float[] userEcef = oldLatLonToECEF(lat, lon, h);
+        float[] ecef = new float[3];
+        ecef[0] = userEcef[0] - objectEcef[0];
+        ecef[1] = userEcef[1] - objectEcef[1];
+        ecef[2] = userEcef[2] - objectEcef[2];
+        double[] matrix = new double[9];
+        //row 1
+        matrix[0] = -Math.sin(lon);
+        matrix[1] = Math.cos(lon);
+        matrix[2] = 0;
+        //row 2
+        matrix[3] = -Math.cos(lon) * Math.sin(lat);
+        matrix[4] = -Math.sin(lat) * Math.sin(lon);
+        matrix[5] = Math.cos(lat);
+        //row 3
+        matrix[6] = Math.cos(lat) * Math.cos(lon);
+        matrix[7] = Math.sin(lon) * Math.cos(lat);
+        matrix[8] = Math.sin(lat);
 
-    float[] enu = new float[3];
-    enu[0]=(float)(matrix[0]*ecef[0]+matrix[1]*ecef[1]+matrix[2]*ecef[2]);
-    enu[1]=(float)(matrix[3]*ecef[0]+matrix[4]*ecef[1]+matrix[5]*ecef[2]);
-    enu[2]=(float)(matrix[6]*ecef[0]+matrix[7]*ecef[1]+matrix[8]*ecef[2]);
-    return enu;
-}
-
-
+        float[] enu = new float[3];
+        enu[0] = (float) (matrix[0] * ecef[0] + matrix[1] * ecef[1] + matrix[2] * ecef[2]);
+        enu[1] = (float) (matrix[3] * ecef[0] + matrix[4] * ecef[1] + matrix[5] * ecef[2]);
+        enu[2] = (float) (matrix[6] * ecef[0] + matrix[7] * ecef[1] + matrix[8] * ecef[2]);
+        return enu;
+    }
 
 
 }
